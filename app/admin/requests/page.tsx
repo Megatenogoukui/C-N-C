@@ -26,7 +26,7 @@ export default async function AdminRequestsPage() {
         <h1 style={{ fontSize: 48 }}>Custom cake requests.</h1>
         <div style={{ display: "grid", gap: 18, marginTop: 24 }}>
           {requests.length ? requests.map((request) => (
-            <section className="panel" key={request.id}>
+            <section className="panel" data-testid={`admin-request-${request.id}`} key={request.id}>
               <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap", alignItems: "flex-start" }}>
                 <div>
                   <h3 style={{ fontSize: 26 }}>{request.name} • {request.occasion}</h3>
@@ -37,11 +37,11 @@ export default async function AdminRequestsPage() {
                 </div>
                 <form action={updateCustomRequestStatusAction} style={{ display: "grid", gap: 10, minWidth: 240 }}>
                   <input type="hidden" name="id" value={request.id} />
-                  <select className="select" name="status" defaultValue={request.status}>
+                  <select className="select" data-testid={`admin-request-status-${request.id}`} name="status" defaultValue={request.status}>
                     {Object.values(RequestStatus).map((status) => <option key={status} value={status}>{status}</option>)}
                   </select>
-                  <textarea className="textarea" name="notes" placeholder="Internal notes" defaultValue={request.notes || ""} />
-                  <button className="button-small" type="submit">Save Status</button>
+                  <textarea className="textarea" data-testid={`admin-request-notes-${request.id}`} name="notes" placeholder="Internal notes" defaultValue={request.notes || ""} />
+                  <button className="button-small" data-testid={`admin-request-save-${request.id}`} type="submit">Save Status</button>
                 </form>
               </div>
               <div className="info-card" style={{ marginTop: 16 }}>

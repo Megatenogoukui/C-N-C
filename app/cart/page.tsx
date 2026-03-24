@@ -17,21 +17,21 @@ export default async function CartPage() {
     <main className="section">
       <div className="container">
         <span className="eyebrow">Cart</span>
-        <h1 style={{ fontSize: 64 }}>Curated for your celebration.</h1>
-        <div className="account-layout" style={{ marginTop: 28 }}>
-          <section className="panel">
+        <h1 className="page-title">Curated for your celebration.</h1>
+        <div className="cart-layout" style={{ marginTop: 28 }}>
+          <section className="panel cart-panel">
             {cart.lines.length > 0 ? (
               cart.lines.map((line) => (
                 <article className="cart-line" key={line.slug}>
                   <div className="cart-line-image">
                     <Image src={line.product.image} alt={line.product.name} fill sizes="96px" />
                   </div>
-                  <div>
-                    <h3 style={{ fontSize: 28 }}>{line.product.name}</h3>
-                    <p>
+                  <div className="cart-line-content">
+                    <h3 className="cart-line-title">{line.product.name}</h3>
+                    <p className="cart-line-meta">
                       {line.product.flavor} • {line.product.weight}
                     </p>
-                    <div className="cta-row" style={{ marginTop: 12 }}>
+                    <div className="cart-line-actions">
                       <form action={updateCart}>
                         <input type="hidden" name="slug" value={line.slug} />
                         <input type="hidden" name="action" value="decrease" />
@@ -56,7 +56,7 @@ export default async function CartPage() {
                       </form>
                     </div>
                   </div>
-                  <strong className="price">{formatInr(line.product.priceInr)}</strong>
+                  <strong className="price cart-line-price">{formatInr(line.product.priceInr)}</strong>
                 </article>
               ))
             ) : (
@@ -77,7 +77,7 @@ export default async function CartPage() {
             )}
           </section>
 
-          <aside className="summary-card">
+          <aside className="summary-card cart-summary-card">
             <h3 style={{ fontSize: 30 }}>Order Summary</h3>
             <div className="summary-row">
               <span>Subtotal</span>

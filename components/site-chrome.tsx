@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { getBrandAssets } from "@/lib/brand";
 import { businessConfig, getWhatsAppUrl } from "@/lib/business";
 import { readCartLines } from "@/lib/cart";
-import { LogoutButton } from "@/components/logout-button";
+import { MenuDrawer } from "@/components/menu-drawer";
 
 const navItems = [
   { href: "/shop", label: "Shop" },
@@ -26,35 +26,14 @@ export async function SiteChrome({
     <div className="page-shell">
       <header className="site-header">
         <div className="container site-nav">
-          <nav className="nav-links desktop-only">
-            {navItems.map((item) => (
-              <Link key={item.href} href={item.href}>
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <details className="mobile-menu mobile-only">
-            <summary>Menu</summary>
-            <div className="mobile-menu-panel">
-              {navItems.map((item) => (
-                <Link key={item.href} href={item.href}>
-                  {item.label}
-                </Link>
-              ))}
-              <Link href={getWhatsAppUrl("Hello C N C, I need help with an order.")}>WhatsApp Support</Link>
-              {session?.user ? (
-                <Link href={session.user.role === "ADMIN" ? "/admin" : "/account"}>
-                  {session.user.role === "ADMIN" ? "Admin" : "Account"}
-                </Link>
-              ) : (
-                <>
-                  <Link href="/login">Login</Link>
-                  <Link href="/signup">Sign Up</Link>
-                </>
-              )}
-            </div>
-          </details>
-          <Link href="/" className="brand-mark">
+          <MenuDrawer
+            accountHref={session?.user ? (session.user.role === "ADMIN" ? "/admin" : "/account") : undefined}
+            accountLabel={session?.user ? (session.user.role === "ADMIN" ? "Admin" : "Account") : undefined}
+            cartCount={cart.count}
+            navItems={navItems}
+            supportHref={getWhatsAppUrl("Hello C N C, I need help with an order.")}
+          />
+          <Link href="/" className="brand-mark site-brand">
             {assets.logo ? (
               <Image src={assets.logo.imageUrl} alt='C "N" C logo' width={72} height={72} style={{ width: "auto", height: 52 }} />
             ) : (
@@ -62,26 +41,7 @@ export async function SiteChrome({
             )}
             <span className="brand-subtitle">Cakes "N" Chocolates</span>
           </Link>
-          <div className="nav-actions desktop-only">
-            <Link className="button-small" href={getWhatsAppUrl("Hello C N C, I need help with an order.")}>
-              WhatsApp Support
-            </Link>
-            {session?.user ? <Link className="button-small" href={session.user.role === "ADMIN" ? "/admin" : "/account"}>{session.user.role === "ADMIN" ? "Admin" : "Account"}</Link> : (
-              <>
-                <Link className="button-small" href="/login">Login</Link>
-                <Link className="button-small" href="/signup">Sign Up</Link>
-              </>
-            )}
-            <Link className="button-small" href="/cart">
-              Cart{cart.count ? ` (${cart.count})` : ""}
-            </Link>
-            {session?.user ? <LogoutButton /> : null}
-          </div>
-          <div className="mobile-header-actions mobile-only">
-            <Link className="button-small" href="/cart">
-              Cart{cart.count ? ` (${cart.count})` : ""}
-            </Link>
-          </div>
+          <div className="header-spacer" aria-hidden="true" />
         </div>
       </header>
       {children}

@@ -1,7 +1,6 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 export function LoginForm({
@@ -11,7 +10,6 @@ export function LoginForm({
   callbackUrl: string;
   enableGoogle: boolean;
 }) {
-  const router = useRouter();
   const [error, setError] = useState<string>("");
   const [isPending, startTransition] = useTransition();
 
@@ -36,8 +34,7 @@ export function LoginForm({
     }
 
     startTransition(() => {
-      router.replace(result?.url || callbackUrl);
-      router.refresh();
+      window.location.assign(result?.url || callbackUrl);
     });
   }
 

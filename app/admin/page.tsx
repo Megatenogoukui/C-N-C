@@ -49,7 +49,12 @@ export default async function AdminPage() {
             <div className="panel">
               <h3 style={{ fontSize: 26 }}>Products</h3>
               {products.map((product) => (
-                <div className="summary-row" key={product.id} style={{ padding: "12px 0", borderBottom: "1px solid rgba(211,195,189,0.35)" }}>
+                <div
+                  className="summary-row"
+                  data-testid={`admin-product-${product.slug}`}
+                  key={product.id}
+                  style={{ padding: "12px 0", borderBottom: "1px solid rgba(211,195,189,0.35)" }}
+                >
                   <div>
                     <span>{product.name} • {product.slug}</span>
                     <p className="subtle">{product.active ? "Active" : "Inactive"}</p>
@@ -68,7 +73,11 @@ export default async function AdminPage() {
             <div className="panel">
               <h3 style={{ fontSize: 26 }}>Orders</h3>
               {orders.length ? orders.map((order) => (
-                <div key={order.id} style={{ borderBottom: "1px solid rgba(211,195,189,0.35)", padding: "14px 0" }}>
+                <div
+                  data-testid={`admin-order-${order.orderNumber}`}
+                  key={order.id}
+                  style={{ borderBottom: "1px solid rgba(211,195,189,0.35)", padding: "14px 0" }}
+                >
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
                     <div>
                       <strong>{order.orderNumber}</strong>
@@ -78,10 +87,22 @@ export default async function AdminPage() {
                     <div className="cta-row">
                       <form action={updateOrderStatusAction} style={{ display: "flex", gap: 8, alignItems: "center" }}>
                         <input type="hidden" name="id" value={order.id} />
-                        <select className="select" name="status" defaultValue={order.status} style={{ minWidth: 180 }}>
+                        <select
+                          className="select"
+                          data-testid={`admin-order-status-${order.orderNumber}`}
+                          name="status"
+                          defaultValue={order.status}
+                          style={{ minWidth: 180 }}
+                        >
                           {Object.values(OrderStatus).map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}
                         </select>
-                        <button className="button-small" type="submit">Update</button>
+                        <button
+                          className="button-small"
+                          data-testid={`admin-order-update-${order.orderNumber}`}
+                          type="submit"
+                        >
+                          Update
+                        </button>
                       </form>
                     </div>
                   </div>
@@ -91,7 +112,12 @@ export default async function AdminPage() {
             <div className="panel">
               <h3 style={{ fontSize: 26 }}>Custom Requests</h3>
               {requests.length ? requests.map((request) => (
-                <div className="summary-row" key={request.id} style={{ padding: "12px 0", borderBottom: "1px solid rgba(211,195,189,0.35)" }}>
+                <div
+                  className="summary-row"
+                  data-testid={`admin-request-summary-${request.id}`}
+                  key={request.id}
+                  style={{ padding: "12px 0", borderBottom: "1px solid rgba(211,195,189,0.35)" }}
+                >
                   <div>
                     <span>{request.name} • {request.occasion}</span>
                     <p className="subtle">{request.status} • {request.contactPreference}</p>
