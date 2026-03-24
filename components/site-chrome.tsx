@@ -26,13 +26,34 @@ export async function SiteChrome({
     <div className="page-shell">
       <header className="site-header">
         <div className="container site-nav">
-          <nav className="nav-links">
+          <nav className="nav-links desktop-only">
             {navItems.map((item) => (
               <Link key={item.href} href={item.href}>
                 {item.label}
               </Link>
             ))}
           </nav>
+          <details className="mobile-menu mobile-only">
+            <summary>Menu</summary>
+            <div className="mobile-menu-panel">
+              {navItems.map((item) => (
+                <Link key={item.href} href={item.href}>
+                  {item.label}
+                </Link>
+              ))}
+              <Link href={getWhatsAppUrl("Hello C N C, I need help with an order.")}>WhatsApp Support</Link>
+              {session?.user ? (
+                <Link href={session.user.role === "ADMIN" ? "/admin" : "/account"}>
+                  {session.user.role === "ADMIN" ? "Admin" : "Account"}
+                </Link>
+              ) : (
+                <>
+                  <Link href="/login">Login</Link>
+                  <Link href="/signup">Sign Up</Link>
+                </>
+              )}
+            </div>
+          </details>
           <Link href="/" className="brand-mark">
             {assets.logo ? (
               <Image src={assets.logo.imageUrl} alt='C "N" C logo' width={72} height={72} style={{ width: "auto", height: 52 }} />
@@ -41,7 +62,7 @@ export async function SiteChrome({
             )}
             <span className="brand-subtitle">Cakes "N" Chocolates</span>
           </Link>
-          <div className="nav-actions">
+          <div className="nav-actions desktop-only">
             <Link className="button-small" href={getWhatsAppUrl("Hello C N C, I need help with an order.")}>
               WhatsApp Support
             </Link>
@@ -55,6 +76,11 @@ export async function SiteChrome({
               Cart{cart.count ? ` (${cart.count})` : ""}
             </Link>
             {session?.user ? <LogoutButton /> : null}
+          </div>
+          <div className="mobile-header-actions mobile-only">
+            <Link className="button-small" href="/cart">
+              Cart{cart.count ? ` (${cart.count})` : ""}
+            </Link>
           </div>
         </div>
       </header>

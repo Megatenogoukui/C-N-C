@@ -19,12 +19,12 @@ export default function AboutPage() {
       <div className="container">
         <span className="eyebrow">Our Story</span>
         <h1 style={{ fontSize: 64 }}>Homemade comfort with a stronger digital storefront.</h1>
-        <div className="story-grid" style={{ marginTop: 32 }}>
-          <div>
+        <div className="content-split" style={{ marginTop: 32 }}>
+          <div className="content-stack">
             <p className="lead">
               C &quot;N&quot; C is positioned as a warm, homemade treats brand with room for serious commerce depth. The experience avoids marketplace clutter and focuses on clear ordering, strong trust, and a memorable bakery identity for Mulund East, Mumbai.
             </p>
-            <div style={{ display: "grid", gap: 26, marginTop: 34 }}>
+            <div style={{ display: "grid", gap: 18, marginTop: 28 }}>
               <div className="info-card">
                 <h3 style={{ fontSize: 24 }}>Why this architecture</h3>
                 <p style={{ marginTop: 10 }}>Next.js handles the presentation, SEO, and polished UI while Go remains the backend direction for services, orders, and integrations.</p>
@@ -35,12 +35,20 @@ export default function AboutPage() {
               </div>
             </div>
           </div>
-          <div className="mosaic-grid">
-            {images.map((src, index) => (
-              <div className={`mosaic-item ${index === 1 || index === 3 ? "mosaic-offset" : ""}`} key={src}>
-                <Image src={src} alt="" width={600} height={760} />
-              </div>
-            ))}
+          <div className="image-composition">
+            <div className="image-composition-main">
+              <Image src={images[0]} alt="Chocolate cake" fill sizes="(max-width: 1080px) 100vw, 38vw" />
+            </div>
+            <div className="image-composition-side">
+              {images.slice(1, 3).map((src) => (
+                <div className="image-composition-card" key={src}>
+                  <Image src={src} alt="" fill sizes="(max-width: 1080px) 100vw, 18vw" />
+                </div>
+              ))}
+            </div>
+            <div className="image-composition-wide">
+              <Image src={images[3]} alt="" fill sizes="(max-width: 1080px) 100vw, 58vw" />
+            </div>
           </div>
         </div>
       </div>

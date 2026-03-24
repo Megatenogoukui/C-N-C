@@ -131,7 +131,7 @@ export default async function CustomCakesPage({ searchParams }: CustomPageProps)
             </form>
           </section>
 
-          <aside style={{ display: "grid", gap: 24 }}>
+          <aside className="content-stack" style={{ gap: 18 }}>
             <div className="info-card">
               <h3 style={{ fontSize: 30 }}>The curator&apos;s touch</h3>
               <p style={{ marginTop: 14 }}>
@@ -144,15 +144,14 @@ export default async function CustomCakesPage({ searchParams }: CustomPageProps)
                 <li>Manual follow-up queue inside admin</li>
               </ul>
             </div>
-            <div className="mosaic-grid">
+            <div className="image-strip">
               {[
                 "https://images.unsplash.com/photo-1535141192574-5d4897c12636?auto=format&fit=crop&w=1200&q=80",
                 "https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=1200&q=80",
-                "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=1200&q=80",
                 "https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?auto=format&fit=crop&w=1200&q=80"
-              ].map((src, index) => (
-                <div className={`mosaic-item ${index === 1 || index === 3 ? "mosaic-offset" : ""}`} key={src}>
-                  <Image src={src} alt="" width={600} height={760} />
+              ].map((src) => (
+                <div className="image-strip-card" key={src}>
+                  <Image src={src} alt="" fill sizes="(max-width: 1080px) 100vw, 18vw" />
                 </div>
               ))}
             </div>
