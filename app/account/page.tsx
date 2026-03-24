@@ -41,7 +41,7 @@ async function AccountPageInner() {
         <div className="custom-layout" style={{ marginTop: 28 }}>
           <section className="panel">
             <h3 style={{ fontSize: 30 }}>Recent Orders</h3>
-            {orders.length ? orders.map((order) => (
+            {orders.length ? orders.map((order: (typeof orders)[number]) => (
               <article className="cart-line" key={order.id}>
                 <div className="cart-line-image" style={{ background: "var(--surface-low)", display: "grid", placeItems: "center" }}>
                   <span style={{ fontWeight: 700, color: "var(--secondary)" }}>#{order.orderNumber.slice(-4)}</span>
@@ -67,7 +67,7 @@ async function AccountPageInner() {
             </div>
             <div className="info-card">
               <h3 style={{ fontSize: 28 }}>Custom Requests</h3>
-              {requests.length ? requests.map((request) => (
+              {requests.length ? requests.map((request: (typeof requests)[number]) => (
                 <p key={request.id} style={{ marginTop: 10 }}>
                   {request.occasion} • {request.status} • {request.eventDate}
                 </p>
