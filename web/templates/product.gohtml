@@ -1,0 +1,101 @@
+{{ define "product" }}
+{{ template "head" . }}
+{{ template "header" . }}
+<main class="section">
+  <div class="container product-layout">
+    <section class="gallery-panel">
+      <div class="gallery-main">
+        <img src="{{ .Product.Image }}" alt="{{ .Product.Name }}">
+      </div>
+      <div class="gallery-thumb-row">
+        {{ range .Product.Gallery }}
+        <img src="{{ . }}" alt="">
+        {{ end }}
+      </div>
+    </section>
+
+    <section class="form-panel">
+      <span class="product-badge">{{ .Product.Badge }}</span>
+      <h1 style="font-size:60px; margin-top:16px;">{{ .Product.Name }}</h1>
+      <p class="lead" style="margin-top:18px;">{{ .Product.DetailBlurb }}</p>
+      <div class="product-topline" style="margin-top:24px;">
+        <div>
+          <div style="color:var(--tertiary);">★★★★★ <span class="subtle">({{ .Product.Reviews }} reviews)</span></div>
+          <p class="subtle" style="margin-top:8px;">{{ .Product.Category }} • {{ .Product.Flavor }} • {{ .Product.Weight }}</p>
+        </div>
+        <strong style="font-family:'Noto Serif',serif; font-size:38px; color:var(--primary);">{{ rupees .Product.PriceINR }}</strong>
+      </div>
+
+      <div class="product-meta-grid">
+        <div class="option-grid">
+          <strong>Weight</strong>
+          <p>0.5 kg, 1 kg, 1.5 kg, 2 kg available during live inventory integration.</p>
+        </div>
+        <div class="option-grid">
+          <strong>Delivery</strong>
+          <p>Select preferred date and slot at checkout. Same-day is intentionally disabled for now.</p>
+        </div>
+        <div class="option-grid">
+          <strong>Add-ons</strong>
+          <ul>
+            {{ range .Product.AddOns }}<li>{{ .Name }} • {{ rupees .PriceINR }}</li>{{ end }}
+          </ul>
+        </div>
+        <div class="option-grid">
+          <strong>Highlights</strong>
+          <ul>
+            {{ range .Product.Highlights }}<li>{{ . }}</li>{{ end }}
+          </ul>
+        </div>
+      </div>
+
+      <form class="custom-form" method="post" action="/cart/add">
+        <input type="hidden" name="slug" value="{{ .Product.Slug }}">
+        <input type="hidden" name="redirect" value="/cart">
+        <label>
+          <span class="label">Message on Cake</span>
+          <input name="message" placeholder="Happy Birthday Aarav">
+        </label>
+        <div class="field-grid">
+          <label>
+            <span class="label">Delivery Date</span>
+            <input type="date" name="delivery_date">
+          </label>
+          <label>
+            <span class="label">Slot</span>
+            <select name="slot">
+              <option>10 AM - 1 PM</option>
+              <option>1 PM - 4 PM</option>
+              <option>4 PM - 7 PM</option>
+              <option>7 PM - 10 PM</option>
+            </select>
+          </label>
+        </div>
+        <label>
+          <span class="label">Special Instructions</span>
+          <textarea name="instructions" placeholder="Less sweet, no nuts on top, call before delivery"></textarea>
+        </label>
+        <div class="cta-row">
+          <button class="pill-btn" type="submit">Add to Cart</button>
+          <a class="ghost-btn" href="/custom-cakes">Need a more custom version?</a>
+        </div>
+      </form>
+
+      <div class="support-panel" style="margin-top:26px;">
+        <h3 style="font-size:24px;">What makes this page production-ready later?</h3>
+        <ul>
+          <li>Structured product SEO with indexable copy.</li>
+          <li>Variant-ready UI for size, flavor, add-ons, and note fields.</li>
+          <li>Clear conversion path to cart and custom orders.</li>
+          <li>Guest checkout compatibility with COD and prepaid flows.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</main>
+{{ template "wa-fab" . }}
+{{ template "footer" . }}
+{{ template "mobile-nav" . }}
+</body>
+</html>
+{{ end }}

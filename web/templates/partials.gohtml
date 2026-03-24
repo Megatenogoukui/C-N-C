@@ -1,0 +1,109 @@
+{{ define "head" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ .Meta.Title }}</title>
+  <meta name="description" content="{{ .Meta.Description }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,300;0,400;0,700;1,400;1,700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+{{ end }}
+
+{{ define "header" }}
+<header class="site-header">
+  <div class="container nav-shell">
+    <nav class="nav-links">
+      <a href="/shop">Shop</a>
+      <a href="/custom-cakes">Custom Cakes</a>
+      <a href="/about">Our Story</a>
+      <a href="/blog">Journal</a>
+    </nav>
+    <a class="brand" href="/">Heritage Bloom</a>
+    <div class="nav-actions">
+      <a class="mini-btn" href="/custom-cakes">WhatsApp Support</a>
+      <a class="mini-btn" href="/account">Account</a>
+      <a class="mini-btn" href="/cart">Cart{{ if gt .CartCount 0 }} ({{ .CartCount }}){{ end }}</a>
+    </div>
+  </div>
+</header>
+{{ end }}
+
+{{ define "footer" }}
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <div class="brand" style="font-size:26px;">Heritage Bloom</div>
+      <p style="margin-top:16px; max-width:320px;">Crafted for modern celebrations in Delhi NCR. Editorial luxury, boutique delivery, and cakes that feel memorable before the first bite.</p>
+    </div>
+    <div>
+      <h4 style="font-size:18px;">Collections</h4>
+      <p style="margin-top:14px;"><a href="/shop?occasion=Birthday">Birthday</a></p>
+      <p><a href="/shop?occasion=Anniversary">Anniversary</a></p>
+      <p><a href="/shop?eggless=1">Eggless</a></p>
+      <p><a href="/shop?occasion=Chocolate">Chocolate</a></p>
+    </div>
+    <div>
+      <h4 style="font-size:18px;">Boutique</h4>
+      <p style="margin-top:14px;"><a href="/about">Our Story</a></p>
+      <p><a href="/custom-cakes">Custom Cakes</a></p>
+      <p><a href="/faq">FAQ</a></p>
+      <p><a href="/track-order">Track Order</a></p>
+    </div>
+    <div>
+      <h4 style="font-size:18px;">Support</h4>
+      <p style="margin-top:14px;">WhatsApp concierge</p>
+      <p>COD and prepaid checkout</p>
+      <p>Single-city managed delivery</p>
+      <p>SEO-ready editorial content</p>
+    </div>
+  </div>
+  <div class="container footer-note">© 2026 Heritage Bloom Patisserie. Crafted with cocoa and soul.</div>
+</footer>
+{{ end }}
+
+{{ define "mobile-nav" }}
+<nav class="mobile-nav">
+  <a href="/">Home</a>
+  <a href="/shop">Shop</a>
+  <a href="/custom-cakes">Custom</a>
+  <a href="/cart">Cart</a>
+</nav>
+{{ end }}
+
+{{ define "wa-fab" }}
+<a class="wa-fab" href="/custom-cakes" aria-label="WhatsApp support">
+  WA
+</a>
+{{ end }}
+
+{{ define "product-card" }}
+<article class="product-card">
+  <a class="image-wrap" href="/product/{{ .Slug }}">
+    <img src="{{ .Image }}" alt="{{ .Name }}">
+  </a>
+  <div class="product-body">
+    <div class="product-badge">{{ .Badge }}</div>
+    <div class="product-topline" style="margin-top:14px;">
+      <div>
+        <h4 style="font-size:28px;">{{ .Name }}</h4>
+        <p class="subtle">{{ .Flavor }} • {{ .Weight }}</p>
+      </div>
+      <strong style="font-size:24px; color:var(--primary);">{{ rupees .PriceINR }}</strong>
+    </div>
+    <p style="margin-top:10px;">{{ .Tagline }}</p>
+    <div class="cta-row" style="margin-top:18px;">
+      <a class="ghost-btn" href="/product/{{ .Slug }}">View Cake</a>
+      <form method="post" action="/cart/add">
+        <input type="hidden" name="slug" value="{{ .Slug }}">
+        <input type="hidden" name="redirect" value="/cart">
+        <button class="pill-btn" type="submit">Add to Cart</button>
+      </form>
+    </div>
+  </div>
+</article>
+{{ end }}

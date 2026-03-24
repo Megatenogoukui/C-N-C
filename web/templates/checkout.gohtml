@@ -1,0 +1,60 @@
+{{ define "checkout" }}
+{{ template "head" . }}
+{{ template "header" . }}
+<main class="section soft">
+  <div class="container">
+    <span class="eyebrow">Checkout</span>
+    <h1 style="font-size:64px;">Luxury checkout, without friction.</h1>
+    <div class="checkout-layout" style="margin-top:28px;">
+      <section class="form-panel">
+        <form class="checkout-form" method="post" action="/checkout">
+          <div class="field-grid">
+            <label><span class="label">First Name</span><input name="first_name" required></label>
+            <label><span class="label">Last Name</span><input name="last_name" required></label>
+            <label><span class="label">Email</span><input name="email" type="email" required></label>
+            <label><span class="label">Phone</span><input name="phone" required></label>
+          </div>
+          <label><span class="label">Delivery Address</span><textarea name="address" required placeholder="House number, street, locality, landmark"></textarea></label>
+          <div class="field-grid">
+            <label><span class="label">Pincode</span><input name="pincode" placeholder="110011"></label>
+            <label><span class="label">Delivery Date</span><input type="date" name="delivery_date"></label>
+            <label><span class="label">Delivery Slot</span><select name="slot"><option>10 AM - 1 PM</option><option>1 PM - 4 PM</option><option>4 PM - 7 PM</option><option>7 PM - 10 PM</option></select></label>
+            <label><span class="label">Order Type</span><select name="order_type"><option>Guest checkout</option><option>Login later</option></select></label>
+          </div>
+          <div class="option-grid">
+            <strong>Payment Mode</strong>
+            <div class="radio-row">
+              <label><input type="radio" name="payment" checked> Cash on Delivery</label>
+              <label><input type="radio" name="payment"> Pay Online</label>
+            </div>
+            <p class="subtle">Online gateway will be connected later. The current flow intentionally stops short of live payment integration.</p>
+          </div>
+          <label><span class="label">Delivery Instructions</span><textarea name="instructions" placeholder="Call on arrival, front gate security note, etc."></textarea></label>
+          <button class="pill-btn" type="submit">Place Order</button>
+        </form>
+      </section>
+      <aside class="summary-card">
+        <h3 style="font-size:28px;">Checkout Summary</h3>
+        {{ range .Cart.Items }}
+          <div class="summary-row"><span>{{ .Product.Name }} × {{ .Quantity }}</span><strong>{{ rupees .Product.PriceINR }}</strong></div>
+        {{ else }}
+          <p>Your cart is empty. Add products before entering checkout.</p>
+        {{ end }}
+        <div class="summary-row"><span>Subtotal</span><strong>{{ rupees .Cart.Subtotal }}</strong></div>
+        <div class="summary-row"><span>Delivery</span><strong>{{ rupees .Cart.Delivery }}</strong></div>
+        <div class="summary-row" style="padding-top:18px; border-top:1px solid rgba(211,195,189,0.5);"><span>Total</span><strong style="font-size:26px;">{{ rupees .Cart.Total }}</strong></div>
+        <ul style="margin-top:18px;">
+          <li>Single-city routing for manageable operations</li>
+          <li>COD plus prepaid architecture</li>
+          <li>Structured address, slot, and support notes</li>
+          <li>Ready for Razorpay and WhatsApp hooks later</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</main>
+{{ template "footer" . }}
+{{ template "mobile-nav" . }}
+</body>
+</html>
+{{ end }}

@@ -1,0 +1,49 @@
+{{ define "account" }}
+{{ template "head" . }}
+{{ template "header" . }}
+<main class="section soft">
+  <div class="container">
+    <span class="eyebrow">Account</span>
+    <h1 style="font-size:64px;">Orders, addresses, and fast reorders.</h1>
+    <div class="account-grid" style="margin-top:28px;">
+      <section class="account-card">
+        <h3 style="font-size:30px;">Recent Orders</h3>
+        <div class="line-item">
+          <img src="{{ (index .Products 0).Image }}" alt="">
+          <div>
+            <h4 style="font-size:26px;">{{ (index .Products 0).Name }}</h4>
+            <p>Delivered on March 20, 2026</p>
+          </div>
+          <a class="ghost-btn" href="/track-order?order=HB2026032007">Track</a>
+        </div>
+        <div class="line-item">
+          <img src="{{ (index .Products 1).Image }}" alt="">
+          <div>
+            <h4 style="font-size:26px;">{{ (index .Products 1).Name }}</h4>
+            <p>Delivered on March 04, 2026</p>
+          </div>
+          <a class="ghost-btn" href="/product/{{ (index .Products 1).Slug }}">Reorder</a>
+        </div>
+      </section>
+      <aside style="display:grid; gap:20px;">
+        <div class="account-card">
+          <h3 style="font-size:28px;">Saved Address</h3>
+          <p style="margin-top:12px;">24, Aurangzeb Road, New Delhi 110011</p>
+        </div>
+        <div class="account-card">
+          <h3 style="font-size:28px;">Wishlist Direction</h3>
+          <p style="margin-top:12px;">Wishlist persistence belongs here once auth and database storage move beyond demo mode.</p>
+        </div>
+        <div class="account-card">
+          <h3 style="font-size:28px;">Support</h3>
+          <p style="margin-top:12px;">Need to modify an order? Route customers toward WhatsApp and order support from this panel.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+{{ template "footer" . }}
+{{ template "mobile-nav" . }}
+</body>
+</html>
+{{ end }}

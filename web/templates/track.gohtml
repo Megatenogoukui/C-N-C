@@ -1,0 +1,29 @@
+{{ define "track" }}
+{{ template "head" . }}
+{{ template "header" . }}
+<main class="section">
+  <div class="container">
+    <span class="eyebrow">Track Order</span>
+    <div class="tracking-card">
+      <h1 style="font-size:56px;">Order {{ .Notice }}</h1>
+      <p class="lead" style="margin-top:16px;">This flow is intentionally clear and reassuring: your order is confirmed, batched for production, and visible through the final delivery stage.</p>
+      <div class="tracking-steps">
+        <div class="tracking-step active"><strong>Received</strong><p>Payment mode captured.</p></div>
+        <div class="tracking-step active"><strong>Confirmed</strong><p>Kitchen slot reserved.</p></div>
+        <div class="tracking-step active"><strong>Baking</strong><p>Decor team has started.</p></div>
+        <div class="tracking-step"><strong>Out for Delivery</strong><p>Dispatch pending.</p></div>
+        <div class="tracking-step"><strong>Delivered</strong><p>Final confirmation awaits.</p></div>
+      </div>
+      <div class="policy-grid" style="margin-top:34px;">
+        <article class="info-card"><h3 style="font-size:24px;">Support</h3><p style="margin-top:12px;">WhatsApp support entry point belongs here once number and template approvals are ready.</p></article>
+        <article class="info-card"><h3 style="font-size:24px;">Slot</h3><p style="margin-top:12px;">4 PM - 7 PM. Driver assignment is one of the later live integrations.</p></article>
+        <article class="info-card"><h3 style="font-size:24px;">Address</h3><p style="margin-top:12px;">Delivery address captured at checkout. Pincode and routing logic can be hardened after serviceability inputs.</p></article>
+      </div>
+    </div>
+  </div>
+</main>
+{{ template "footer" . }}
+{{ template "mobile-nav" . }}
+</body>
+</html>
+{{ end }}

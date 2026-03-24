@@ -1,0 +1,54 @@
+{{ define "shop" }}
+{{ template "head" . }}
+{{ template "header" . }}
+<main class="section">
+  <div class="container page-hero">
+    <span class="eyebrow">Shop</span>
+    <h1 style="font-size:68px;">Our Collections</h1>
+    <p class="lead" style="margin-top:18px;">Discover occasion-led cakes, editorial signatures, gift-ready combinations, and premium flavors crafted for one-city luxury delivery.</p>
+  </div>
+
+  <div class="container shop-layout">
+    <aside class="filter-panel">
+      <h3 style="font-size:26px;">Refine</h3>
+      <form method="get" action="/shop">
+        <div class="filter-group">
+          <strong class="block-label">Occasion</strong>
+          <label><input type="radio" name="occasion" value="" {{ if eq .Filters.Occasion "" }}checked{{ end }}> All</label>
+          <label><input type="radio" name="occasion" value="Birthday" {{ if eq .Filters.Occasion "Birthday" }}checked{{ end }}> Birthday</label>
+          <label><input type="radio" name="occasion" value="Anniversary" {{ if eq .Filters.Occasion "Anniversary" }}checked{{ end }}> Anniversary</label>
+          <label><input type="radio" name="occasion" value="Wedding" {{ if eq .Filters.Occasion "Wedding" }}checked{{ end }}> Wedding</label>
+        </div>
+        <div class="filter-group">
+          <strong class="block-label">Flavor</strong>
+          <label><input type="radio" name="flavor" value="" {{ if eq .Filters.Flavor "" }}checked{{ end }}> All</label>
+          <label><input type="radio" name="flavor" value="Belgian Chocolate" {{ if eq .Filters.Flavor "Belgian Chocolate" }}checked{{ end }}> Belgian Chocolate</label>
+          <label><input type="radio" name="flavor" value="Fresh Fruit" {{ if eq .Filters.Flavor "Fresh Fruit" }}checked{{ end }}> Fresh Fruit</label>
+          <label><input type="radio" name="flavor" value="Red Velvet" {{ if eq .Filters.Flavor "Red Velvet" }}checked{{ end }}> Red Velvet</label>
+        </div>
+        <div class="filter-group">
+          <strong class="block-label">Dietary</strong>
+          <label><input type="checkbox" name="eggless" value="1" {{ if .Filters.Eggless }}checked{{ end }}> Eggless-ready only</label>
+        </div>
+        <button class="pill-btn" style="width:100%;" type="submit">Apply Filters</button>
+      </form>
+    </aside>
+    <section>
+      <div class="product-grid">
+        {{ range .Products }}
+          {{ template "product-card" . }}
+        {{ else }}
+          <div class="empty-card">
+            <h3>No cakes matched this filter set.</h3>
+            <p style="margin-top:12px;">Reset one or two filters. For anything more specialized, use the custom cake inquiry flow instead of forcing the catalog.</p>
+          </div>
+        {{ end }}
+      </div>
+    </section>
+  </div>
+</main>
+{{ template "footer" . }}
+{{ template "mobile-nav" . }}
+</body>
+</html>
+{{ end }}

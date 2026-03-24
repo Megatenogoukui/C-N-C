@@ -1,0 +1,54 @@
+{{ define "admin" }}
+{{ template "head" . }}
+{{ template "header" . }}
+<main class="section">
+  <div class="container">
+    <span class="eyebrow">Admin Preview</span>
+    <h1 style="font-size:64px;">Operations, not just aesthetics.</h1>
+    <div class="policy-grid" style="margin-top:32px;">
+      <article class="info-card">
+        <h3 style="font-size:28px;">Orders</h3>
+        <p style="margin-top:12px;">Track active orders, payment mode, slot status, and dispatch readiness.</p>
+      </article>
+      <article class="info-card">
+        <h3 style="font-size:28px;">Custom Requests</h3>
+        <p style="margin-top:12px;">Review bespoke inquiries, attachments, budget brackets, and follow-up channel.</p>
+      </article>
+      <article class="info-card">
+        <h3 style="font-size:28px;">Products</h3>
+        <p style="margin-top:12px;">Edit names, pricing, badges, product copy, and SEO blurbs without breaking layout consistency.</p>
+      </article>
+    </div>
+    <div class="account-grid" style="margin-top:28px;">
+      <section class="account-card">
+        <h3 style="font-size:30px;">Catalog Snapshot</h3>
+        {{ range .Products }}
+        <div class="summary-row" style="padding:12px 0; border-bottom:1px solid rgba(211,195,189,0.35);">
+          <span>{{ .Name }}</span>
+          <strong>{{ rupees .PriceINR }}</strong>
+        </div>
+        {{ end }}
+      </section>
+      <aside style="display:grid; gap:20px;">
+        <div class="account-card">
+          <h3 style="font-size:28px;">Delivery Slots</h3>
+          <p style="margin-top:12px;">Morning, afternoon, evening, and late evening windows. Real capacity rules are one of the remaining backend integrations.</p>
+        </div>
+        <div class="account-card">
+          <h3 style="font-size:28px;">Pending Integrations</h3>
+          <ul style="margin-top:12px;">
+            <li>Database persistence</li>
+            <li>Media storage</li>
+            <li>Payment gateway</li>
+            <li>WhatsApp provider</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+{{ template "footer" . }}
+{{ template "mobile-nav" . }}
+</body>
+</html>
+{{ end }}

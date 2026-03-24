@@ -1,0 +1,160 @@
+{{ define "home" }}
+{{ template "head" . }}
+{{ template "header" . }}
+<main>
+  <section class="hero grain">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=1800&q=80" alt="Luxury floral cake">
+    </div>
+    <div class="container hero-copy">
+      <span class="eyebrow">Est. 2026 • New Delhi</span>
+      <h1>Crafted for life's most <em>exquisite</em> celebrations.</h1>
+      <p class="lead" style="margin-top:24px;">A premium cake commerce experience for Delhi NCR with curated collections, personalized requests, boutique delivery, COD and prepaid checkout, and concierge-grade support.</p>
+      <div class="hero-actions">
+        <a class="pill-btn" href="/shop">Explore Collections</a>
+        <a class="ghost-btn" href="/custom-cakes">Design a Custom Cake</a>
+      </div>
+      <div class="stats-row">
+        <div class="stat"><strong>150+</strong><span class="subtle">cakes crafted weekly</span></div>
+        <div class="stat"><strong>24h</strong><span class="subtle">preorder lead for most designs</span></div>
+        <div class="stat"><strong>4.9/5</strong><span class="subtle">customer rating across signature range</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section soft">
+    <div class="container story-grid">
+      <div class="mosaic">
+        <div class="offset"><img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80" alt="Cake artistry"></div>
+        <div><img src="https://images.unsplash.com/photo-1464349153735-7db50ed83c84?auto=format&fit=crop&w=1200&q=80" alt="Fresh ingredients"></div>
+        <div><img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?auto=format&fit=crop&w=1200&q=80" alt="Luxury cake detail"></div>
+        <div class="offset"><img src="https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?auto=format&fit=crop&w=1200&q=80" alt="Delivery box"></div>
+      </div>
+      <div class="section-copy">
+        <span class="eyebrow">The Art of the Cake</span>
+        <h2>Old-world craft. Modern celebration. Real commerce depth.</h2>
+        <div class="feature-list">
+          <div class="feature-item">
+            <div class="feature-icon">01</div>
+            <div><h4 style="font-size:24px;">Premium Ingredients</h4><p>Single-origin cocoa, boutique dairy, fresh fruit, and polished finishings that justify a premium positioning.</p></div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">02</div>
+            <div><h4 style="font-size:24px;">Customization Without Chaos</h4><p>Catalog-led ordering for speed, with a separate bespoke inquiry flow for serious custom commissions.</p></div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">03</div>
+            <div><h4 style="font-size:24px;">Operationally Honest</h4><p>Single-city serviceability, slot-led delivery, COD plus online payments, and clear support touchpoints.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Categories</span>
+      <div style="display:flex; justify-content:space-between; gap:18px; align-items:end;">
+        <h2>Curated Selections</h2>
+        <a href="/shop" class="ghost-btn">View All Collections</a>
+      </div>
+      <div class="collections-grid">
+        {{ range .Collections }}
+        <a class="collection-card" href="/shop?occasion={{ .Name }}">
+          <img src="{{ .Image }}" alt="{{ .Name }}">
+          <div class="content">
+            <h3 style="color:white; font-size:30px;">{{ .Name }}</h3>
+            <p style="color:rgba(255,255,255,0.82); margin-top:8px;">{{ .Intro }}</p>
+          </div>
+        </a>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  <section class="section soft">
+    <div class="container">
+      <div style="display:flex; justify-content:space-between; gap:18px; align-items:end; margin-bottom:28px;">
+        <div>
+          <span class="eyebrow">Bestsellers</span>
+          <h2>Signature Bestsellers</h2>
+        </div>
+        <a href="/shop" class="mini-btn">Browse Full Menu</a>
+      </div>
+      <div class="bestsellers-row">
+        {{ range .Bestsellers }}
+          {{ template "product-card" . }}
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-panel grain">
+        <div class="cta-bg">
+          <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=1800&q=80" alt="Custom cake workshop">
+        </div>
+        <div class="cta-content">
+          <span class="eyebrow" style="color:rgba(255,255,255,0.78);">Bespoke Creations</span>
+          <h2>Design your own piece of edible art.</h2>
+          <p class="lead" style="color:rgba(255,255,255,0.84); margin-top:20px;">Use the custom cake form for inspiration-led commissions, or move straight to WhatsApp support once your business number is ready.</p>
+          <div class="cta-row">
+            <a class="pill-btn" style="background:white; color:var(--primary);" href="/custom-cakes">Consult Our Cake Artist</a>
+            <a class="ghost-btn" style="border-color:rgba(255,255,255,0.4); color:white;" href="/faq">How It Works</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div style="text-align:center; margin-bottom:32px;">
+        <span class="eyebrow">Customer Love</span>
+        <h2>Social proof that still feels premium.</h2>
+      </div>
+      <div class="testimonial-grid">
+        {{ range .Testimonials }}
+        <article class="quote-card">
+          <div style="color:var(--tertiary); margin-bottom:14px;">★★★★★</div>
+          <p style="font-size:20px; color:var(--primary); font-style:italic;">"{{ .Quote }}"</p>
+          <p style="margin-top:14px; text-transform:uppercase; letter-spacing:0.18em; font-size:12px;">{{ .Name }} • {{ .Area }}</p>
+        </article>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  <section class="section soft">
+    <div class="container">
+      <div style="text-align:center; margin-bottom:34px;">
+        <span class="eyebrow">The Bloom Journey</span>
+        <h2>Built for conversion and delivery confidence.</h2>
+      </div>
+      <div class="journey-grid">
+        <div class="journey-step">
+          <div class="journey-index">01</div>
+          <h4 style="font-size:24px;">Curate Your Cake</h4>
+          <p>Choose from occasion-led collections, or enter the custom flow if you need a commission-led design.</p>
+        </div>
+        <div class="journey-step">
+          <div class="journey-index">02</div>
+          <h4 style="font-size:24px;">Select Delivery Details</h4>
+          <p>Pick your date, time window, message-on-cake, and any finishing add-ons before checkout.</p>
+        </div>
+        <div class="journey-step">
+          <div class="journey-index">03</div>
+          <h4 style="font-size:24px;">Track With Clarity</h4>
+          <p>From confirmation to baking to final dispatch, the order flow stays transparent and reassuring.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{{ template "wa-fab" . }}
+{{ template "footer" . }}
+{{ template "mobile-nav" . }}
+</body>
+</html>
+{{ end }}

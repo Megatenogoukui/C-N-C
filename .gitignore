@@ -1,0 +1,14 @@
+.env
+.env.local
+.env.*.local
+.next/
+node_modules/
+dev.db
+*.db
+artifacts/
+public/uploads/
+coverage/
+dist/
+build/
+.DS_Store
+*.log

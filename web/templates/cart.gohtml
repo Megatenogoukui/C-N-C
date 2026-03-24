@@ -1,0 +1,66 @@
+{{ define "cart" }}
+{{ template "head" . }}
+{{ template "header" . }}
+<main class="section">
+  <div class="container">
+    <span class="eyebrow">Cart</span>
+    <h1 style="font-size:64px;">Curated for your celebration.</h1>
+    <div class="cart-layout" style="margin-top:28px;">
+      <section class="form-panel">
+        {{ if .Cart.Items }}
+          {{ range .Cart.Items }}
+          <article class="line-item">
+            <img src="{{ .Product.Image }}" alt="{{ .Product.Name }}">
+            <div>
+              <h3 style="font-size:28px;">{{ .Product.Name }}</h3>
+              <p>{{ .Product.Flavor }} • {{ .Product.Weight }}</p>
+              <div class="quantity-controls">
+                <form method="post" action="/cart/update"><input type="hidden" name="slug" value="{{ .Product.Slug }}"><input type="hidden" name="action" value="decrease"><button class="mini-btn" type="submit">−</button></form>
+                <span>{{ .Quantity }}</span>
+                <form method="post" action="/cart/update"><input type="hidden" name="slug" value="{{ .Product.Slug }}"><input type="hidden" name="action" value="increase"><button class="mini-btn" type="submit">+</button></form>
+                <form method="post" action="/cart/update"><input type="hidden" name="slug" value="{{ .Product.Slug }}"><input type="hidden" name="action" value="remove"><button class="ghost-btn" type="submit">Remove</button></form>
+              </div>
+            </div>
+            <strong style="font-family:'Noto Serif',serif; font-size:28px;">{{ rupees .Product.PriceINR }}</strong>
+          </article>
+          {{ end }}
+        {{ else }}
+          <div class="empty-card">
+            <h3>Your cart is empty.</h3>
+            <p style="margin-top:12px;">Start in the shop, or move into custom cakes if you already know the celebration needs a bespoke centerpiece.</p>
+            <div class="cta-row">
+              <a class="pill-btn" href="/shop">Browse Cakes</a>
+              <a class="ghost-btn" href="/custom-cakes">Custom Inquiry</a>
+            </div>
+          </div>
+        {{ end }}
+      </section>
+
+      <aside class="summary-card">
+        <h3 style="font-size:30px;">Order Summary</h3>
+        <div class="summary-row"><span>Subtotal</span><strong>{{ rupees .Cart.Subtotal }}</strong></div>
+        <div class="summary-row"><span>Delivery</span><strong>{{ rupees .Cart.Delivery }}</strong></div>
+        <div class="summary-row"><span>Discount</span><strong>-{{ rupees .Cart.Discount }}</strong></div>
+        <div class="summary-row" style="padding-top:18px; border-top:1px solid rgba(211,195,189,0.5);"><span>Total</span><strong style="font-size:26px;">{{ rupees .Cart.Total }}</strong></div>
+        <label style="margin-top:18px; display:block;">
+          <span class="label">Coupon</span>
+          <input placeholder="BLOOMFIRST">
+        </label>
+        <div class="cta-row">
+          <a class="pill-btn" href="/checkout">Proceed to Checkout</a>
+          <a class="ghost-btn" href="/shop">Keep Shopping</a>
+        </div>
+        <ul style="margin-top:18px;">
+          <li>Guest checkout supported</li>
+          <li>COD and online payments supported in UI</li>
+          <li>Delivery charge waived above ₹4,000 in current demo logic</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</main>
+{{ template "footer" . }}
+{{ template "mobile-nav" . }}
+</body>
+</html>
+{{ end }}
