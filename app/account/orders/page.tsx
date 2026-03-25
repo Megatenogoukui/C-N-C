@@ -26,22 +26,35 @@ export default async function AccountOrdersPage({ searchParams }: OrdersPageProp
     redirect("/admin");
   }
 
-  const [params, orders, reviewMap] = await Promise.all([
-    searchParams,
-    db.order.findMany({
-      where: { userId: session.user.id },
-      include: { items: true },
-      orderBy: { createdAt: "desc" }
-    }) as Promise<OrderWithItemsRecord[]>,
-    getCurrentUserReviewMap()
-  ]);
-  const products = await db.product.findMany({
-    where: {
-      id: {
-        in: [...new Set(orders.flatMap((order) => order.items.map((item) => item.productId)))]
+  const params = await searchParams;
+  let orders: OrderWithItemsRecord[] = [];
+  let reviewMap = new Map();
+
+  try {
+    [orders, reviewMap] = await Promise.all([
+      db.order.findMany({
+        where: { userId: session.user.id },
+        include: { items: true },
+        orderBy: { createdAt: "desc" }
+      }) as Promise<OrderWithItemsRecord[]>,
+      getCurrentUserReviewMap()
+    ]);
+  } catch (error) {
+    console.error("account orders lookup failed", error);
+  }
+
+  let products: Awaited<ReturnType<typeof db.product.findMany>> = [];
+  try {
+    products = await db.product.findMany({
+      where: {
+        id: {
+          in: [...new Set(orders.flatMap((order) => order.items.map((item) => item.productId)))]
+        }
       }
-    }
-  });
+    });
+  } catch (error) {
+    console.error("account order products lookup failed", error);
+  }
   const productMap = new Map(products.map((product) => [product.id, product]));
 
   return (

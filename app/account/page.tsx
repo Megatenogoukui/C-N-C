@@ -52,7 +52,21 @@ async function AccountPageInner({ searchParams }: AccountPageProps) {
   }
 
   if (!user) {
-    redirect("/login?callbackUrl=/account");
+    user = {
+      id: session.user.id!,
+      name: session.user.name || "Customer",
+      email: session.user.email || "",
+      phone: null,
+      address: null,
+      pincode: null,
+      emailVerified: null,
+      image: null,
+      passwordHash: null,
+      role: "CUSTOMER" as const,
+      blockedAt: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
   }
 
   const params = await searchParams;

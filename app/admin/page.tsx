@@ -14,13 +14,25 @@ export const metadata: Metadata = {
 
 export default async function AdminPage() {
   noStore();
-  const [products, orders, assets, requests, users] = await Promise.all([
-    db.product.findMany({ orderBy: { createdAt: "desc" } }),
-    db.order.findMany({ include: { items: true }, orderBy: { createdAt: "desc" }, take: 10 }) as Promise<OrderWithItemsRecord[]>,
-    db.brandAsset.findMany({ orderBy: { createdAt: "desc" } }),
-    db.customCakeRequest.findMany({ orderBy: { createdAt: "desc" }, take: 8 }),
-    db.user.findMany({ orderBy: { createdAt: "desc" } })
-  ]);
+  let products: Awaited<ReturnType<typeof db.product.findMany>> = [];
+  let orders: OrderWithItemsRecord[] = [];
+  let assets: Awaited<ReturnType<typeof db.brandAsset.findMany>> = [];
+  let requests: Awaited<ReturnType<typeof db.customCakeRequest.findMany>> = [];
+  let users: Awaited<ReturnType<typeof db.user.findMany>> = [];
+  let dataWarning: string | null = null;
+
+  try {
+    [products, orders, assets, requests, users] = await Promise.all([
+      db.product.findMany({ orderBy: { createdAt: "desc" } }),
+      db.order.findMany({ include: { items: true }, orderBy: { createdAt: "desc" }, take: 10 }) as Promise<OrderWithItemsRecord[]>,
+      db.brandAsset.findMany({ orderBy: { createdAt: "desc" } }),
+      db.customCakeRequest.findMany({ orderBy: { createdAt: "desc" }, take: 8 }),
+      db.user.findMany({ orderBy: { createdAt: "desc" } })
+    ]);
+  } catch (error) {
+    console.error("admin dashboard lookup failed", error);
+    dataWarning = "Live admin data is temporarily unavailable. Basic navigation still works, but Mongo data could not be loaded.";
+  }
 
   return (
     <section className="panel admin-panel">
@@ -38,6 +50,8 @@ export default async function AdminPage() {
           </div>
         </div>
       </div>
+
+        {dataWarning ? <div className="info-card" style={{ marginTop: 18, color: "#8f2d24" }}>{dataWarning}</div> : null}
 
         <div className="admin-summary-grid" style={{ marginTop: 28 }}>
           <div className="info-card"><strong>{users.length}</strong><p style={{ marginTop: 8 }}>registered users</p></div>

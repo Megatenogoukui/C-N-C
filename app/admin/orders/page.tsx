@@ -13,10 +13,18 @@ export const metadata: Metadata = {
 
 export default async function AdminOrdersPage() {
   noStore();
-  const orders = await db.order.findMany({
-    include: { items: true },
-    orderBy: { createdAt: "desc" }
-  }) as OrderWithItemsRecord[];
+  let orders: OrderWithItemsRecord[] = [];
+  let dataWarning: string | null = null;
+
+  try {
+    orders = await db.order.findMany({
+      include: { items: true },
+      orderBy: { createdAt: "desc" }
+    }) as OrderWithItemsRecord[];
+  } catch (error) {
+    console.error("admin orders lookup failed", error);
+    dataWarning = "Live order data is temporarily unavailable. Please retry once the database connection stabilizes.";
+  }
 
   return (
     <section className="panel admin-panel">
@@ -27,6 +35,8 @@ export default async function AdminOrdersPage() {
           <p>Review delivery details, payment state, ordered items, and update status for the customer tracker.</p>
         </div>
       </div>
+
+      {dataWarning ? <div className="info-card" style={{ marginTop: 18, color: "#8f2d24" }}>{dataWarning}</div> : null}
 
       <div className="admin-card-list">
         {orders.map((order) => (

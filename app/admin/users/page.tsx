@@ -10,10 +10,19 @@ export const metadata: Metadata = {
 
 export default async function AdminUsersPage() {
   noStore();
-  const [users, orders] = await Promise.all([
-    db.user.findMany({ orderBy: { createdAt: "desc" } }),
-    db.order.findMany({ orderBy: { createdAt: "desc" } })
-  ]);
+  let users: Awaited<ReturnType<typeof db.user.findMany>> = [];
+  let orders: Awaited<ReturnType<typeof db.order.findMany>> = [];
+  let dataWarning: string | null = null;
+
+  try {
+    [users, orders] = await Promise.all([
+      db.user.findMany({ orderBy: { createdAt: "desc" } }),
+      db.order.findMany({ orderBy: { createdAt: "desc" } })
+    ]);
+  } catch (error) {
+    console.error("admin users lookup failed", error);
+    dataWarning = "User directory is temporarily unavailable because live database data could not be loaded.";
+  }
 
   const orderCountByUser = new Map<string, number>();
   for (const order of orders) {
@@ -30,6 +39,8 @@ export default async function AdminUsersPage() {
           <p>Promote trusted accounts to admin, remove admin access, or block users from logging in.</p>
         </div>
       </div>
+
+      {dataWarning ? <div className="info-card" style={{ marginTop: 18, color: "#8f2d24" }}>{dataWarning}</div> : null}
 
       <div className="admin-card-list">
         {users.map((user) => (
