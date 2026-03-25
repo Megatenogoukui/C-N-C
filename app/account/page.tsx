@@ -29,25 +29,33 @@ async function AccountPageInner({ searchParams }: AccountPageProps) {
     redirect("/admin");
   }
 
-  const user = await db.user.findUnique({ where: { id: session.user.id } });
+  let user = null;
+  let orders: OrderWithItemsRecord[] = [];
+  let requests: Awaited<ReturnType<typeof db.customCakeRequest.findMany>> = [];
+
+  try {
+    [user, orders, requests] = await Promise.all([
+      db.user.findUnique({ where: { id: session.user.id } }),
+      db.order.findMany({
+        where: { userId: session.user.id },
+        include: { items: true },
+        orderBy: { createdAt: "desc" }
+      }) as Promise<OrderWithItemsRecord[]>,
+      db.customCakeRequest.findMany({
+        where: { userId: session.user.id },
+        orderBy: { createdAt: "desc" },
+        take: 5
+      })
+    ]);
+  } catch (error) {
+    console.error("account page lookup failed", error);
+  }
+
   if (!user) {
     redirect("/login?callbackUrl=/account");
   }
 
   const params = await searchParams;
-
-  const [orders, requests] = await Promise.all([
-    db.order.findMany({
-      where: { userId: session.user.id },
-      include: { items: true },
-      orderBy: { createdAt: "desc" }
-    }) as Promise<OrderWithItemsRecord[]>,
-    db.customCakeRequest.findMany({
-      where: { userId: session.user.id },
-      orderBy: { createdAt: "desc" },
-      take: 5
-    })
-  ]);
 
   return (
     <main className="section section-soft">

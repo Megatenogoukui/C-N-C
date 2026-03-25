@@ -52,7 +52,12 @@ export default async function TrackOrderPage({ searchParams }: TrackingPageProps
   noStore();
   const params = await searchParams;
   const order = params.order || "CNC-DEMO-0001";
-  const orderRecord = await db.order.findUnique({ where: { orderNumber: order } });
+  let orderRecord = null;
+  try {
+    orderRecord = await db.order.findUnique({ where: { orderNumber: order } });
+  } catch (error) {
+    console.error("track order lookup failed", error);
+  }
   const activeIndex = orderRecord ? TRACKING_ORDER.indexOf(orderRecord.status) : 0;
   const isCancelled = orderRecord?.status === "CANCELLED";
 
@@ -80,7 +85,11 @@ export default async function TrackOrderPage({ searchParams }: TrackingPageProps
                 Need support on this order?
               </Link>
             </div>
-          ) : null}
+          ) : (
+            <div className="info-card" style={{ marginTop: 20 }}>
+              We could not load a live order record right now. You can still contact support on WhatsApp and share your order number for a manual update.
+            </div>
+          )}
           {isCancelled ? (
             <div className="info-card" style={{ marginTop: 20, color: "#8f2d24" }}>
               This order has been cancelled. Please contact WhatsApp support if you need clarification or a replacement order.
