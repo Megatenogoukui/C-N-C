@@ -24,6 +24,11 @@ export async function readCartEntries(): Promise<CartEntry[]> {
     .filter((entry): entry is CartEntry => entry !== null);
 }
 
+export async function readCartCount() {
+  const entries = await readCartEntries();
+  return entries.reduce((sum, entry) => sum + entry.quantity, 0);
+}
+
 export async function readCartLines() {
   const entries = await readCartEntries();
   const products = await getProductBySlugs(entries.map((entry) => entry.slug));

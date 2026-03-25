@@ -1,6 +1,5 @@
 "use server";
 
-import { BrandAssetType, OrderStatus, RequestStatus, Role } from "@prisma/client";
 import { randomUUID } from "crypto";
 import fs from "fs/promises";
 import path from "path";
@@ -8,11 +7,12 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { BrandAssetType, ContentEntryType, OrderStatus, RequestStatus } from "@/lib/db-types";
 import { productSchema } from "@/lib/validation";
 
 async function requireAdmin() {
   const session = await auth();
-  if (!session?.user || session.user.role !== Role.ADMIN) {
+  if (!session?.user || session.user.role !== "ADMIN") {
     redirect("/login?callbackUrl=/admin");
   }
   return session;
@@ -175,12 +175,16 @@ export async function updateOrderStatusAction(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id") || "");
   const status = String(formData.get("status") || "") as OrderStatus;
-  await db.order.update({
+  const updatedOrder = await db.order.update({
     where: { id },
     data: { status }
   });
   revalidatePath("/admin");
   revalidatePath("/account");
+  revalidatePath("/track-order");
+  if (updatedOrder?.orderNumber) {
+    revalidatePath(`/track-order?order=${updatedOrder.orderNumber}`);
+  }
 }
 
 export async function updateProductAction(formData: FormData) {
@@ -232,4 +236,81 @@ export async function updateCustomRequestStatusAction(formData: FormData) {
 
   revalidatePath("/admin/requests");
   revalidatePath("/admin");
+}
+
+export async function upsertContentEntryAction(formData: FormData) {
+  await requireAdmin();
+  const type = String(formData.get("type") || "STORY") as ContentEntryType;
+  const slug = String(formData.get("slug") || "").trim();
+  const title = String(formData.get("title") || "").trim();
+  const excerpt = String(formData.get("excerpt") || "").trim();
+  const body = String(formData.get("body") || "").trim();
+  const imageUrl = String(formData.get("imageUrl") || "").trim();
+  const sortOrder = Number(formData.get("sortOrder") || 0);
+  const published = formData.get("published") === "on";
+
+  if (!slug || !title || !body) {
+    redirect("/admin/content?error=Slug%2C%20title%2C%20and%20body%20are%20required");
+  }
+
+  await db.contentEntry.upsert({
+    where: { slug },
+    update: {
+      type,
+      title,
+      excerpt,
+      body,
+      imageUrl: imageUrl || null,
+      sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
+      published
+    },
+    create: {
+      type,
+      slug,
+      title,
+      excerpt,
+      body,
+      imageUrl: imageUrl || null,
+      sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
+      published
+    }
+  });
+
+  revalidatePath("/about");
+  revalidatePath("/blog");
+  revalidatePath("/admin");
+  revalidatePath("/admin/content");
+  revalidatePath("/admin/story");
+  revalidatePath("/admin/journal");
+  redirect("/admin/content");
+}
+
+export async function updateUserRoleAction(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id") || "");
+  const role = String(formData.get("role") || "CUSTOMER");
+  if (!id || (role !== "CUSTOMER" && role !== "ADMIN")) return;
+
+  await db.user.update({
+    where: { id },
+    data: { role }
+  });
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/users");
+}
+
+export async function toggleUserBlockAction(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id") || "");
+  const blocked = String(formData.get("blocked") || "false") === "true";
+  if (!id) return;
+
+  await db.user.update({
+    where: { id },
+    data: { blockedAt: blocked ? new Date() : null }
+  });
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/users");
 }

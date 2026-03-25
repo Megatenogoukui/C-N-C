@@ -46,6 +46,18 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
               <input className="input" name="email" type="email" placeholder="you@example.com" required />
             </label>
             <label>
+              <span className="field-label">Phone</span>
+              <input className="input" name="phone" type="tel" placeholder="9920554660" required />
+            </label>
+            <label>
+              <span className="field-label">Address</span>
+              <textarea className="textarea" name="address" placeholder="Flat number, building, street, locality" required />
+            </label>
+            <label>
+              <span className="field-label">Pincode</span>
+              <input className="input" name="pincode" type="text" placeholder="400081" required />
+            </label>
+            <label>
               <span className="field-label">Password</span>
               <input className="input" name="password" type="password" placeholder="Minimum 8 characters" required />
             </label>

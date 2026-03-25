@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SiteChrome } from "@/components/site-chrome";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: {
     default: 'C "N" C | Cakes "N" Chocolates',

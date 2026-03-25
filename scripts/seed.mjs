@@ -1,15 +1,13 @@
 import "dotenv/config";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient, Role } from "@prisma/client";
+import { MongoClient } from "mongodb";
 import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient({
-  adapter: new PrismaPg({
-    connectionString:
-      process.env.DATABASE_URL ||
-      "postgresql://postgres:postgres@localhost:5432/cnc_store"
-  })
-});
+const mongoUri = process.env.DATABASE_URL || "mongodb://127.0.0.1:27017/cnc_store";
+
+function getDbNameFromUri(uri) {
+  const withoutQuery = uri.split("?")[0];
+  return withoutQuery.substring(withoutQuery.lastIndexOf("/") + 1) || "cnc_store";
+}
 
 const products = [
   {
@@ -40,7 +38,8 @@ const products = [
       { name: "Celebration candles", priceInr: 120 },
       { name: "Handwritten card", priceInr: 180 },
       { name: "Mini flower bunch", priceInr: 450 }
-    ])
+    ]),
+    active: true
   },
   {
     slug: "noir-chocolate-ganache",
@@ -69,7 +68,8 @@ const products = [
     addOnsJson: JSON.stringify([
       { name: "Chocolate truffle box", priceInr: 380 },
       { name: "Sparkler candle set", priceInr: 160 }
-    ])
+    ]),
+    active: true
   },
   {
     slug: "persian-rose-pistachio",
@@ -98,50 +98,88 @@ const products = [
     addOnsJson: JSON.stringify([
       { name: "Rose petal macarons", priceInr: 320 },
       { name: "Premium greeting scroll", priceInr: 220 }
-    ])
+    ]),
+    active: true
   }
 ];
 
+const client = new MongoClient(mongoUri);
+
 async function main() {
+  await client.connect();
+  const db = client.db(getDbNameFromUri(mongoUri));
+  const users = db.collection("users");
+  const productsCollection = db.collection("products");
+
+  await users.createIndex({ email: 1 }, { unique: true, sparse: true });
+  await productsCollection.createIndex({ slug: 1 }, { unique: true });
+
   const adminPassword = await bcrypt.hash("admin123", 10);
   const userPassword = await bcrypt.hash("customer123", 10);
+  const now = new Date();
 
-  await prisma.user.upsert({
-    where: { email: "admin@cnc.local" },
-    update: { role: Role.ADMIN, passwordHash: adminPassword, name: 'C "N" C Admin' },
-    create: {
-      email: "admin@cnc.local",
-      name: 'C "N" C Admin',
-      role: Role.ADMIN,
-      passwordHash: adminPassword
-    }
-  });
+  await users.updateOne(
+    { email: "admin@cnc.local" },
+    {
+      $set: {
+        name: 'C "N" C Admin',
+        role: "ADMIN",
+        passwordHash: adminPassword,
+        updatedAt: now
+      },
+      $setOnInsert: {
+        email: "admin@cnc.local",
+        phone: "9920554660",
+        address: "Mulund East, Mumbai",
+        pincode: "400081",
+        emailVerified: null,
+        image: null,
+        createdAt: now
+      }
+    },
+    { upsert: true }
+  );
 
-  await prisma.user.upsert({
-    where: { email: "customer@cnc.local" },
-    update: { passwordHash: userPassword, name: "Demo Customer" },
-    create: {
-      email: "customer@cnc.local",
-      name: "Demo Customer",
-      passwordHash: userPassword
-    }
-  });
+  await users.updateOne(
+    { email: "customer@cnc.local" },
+    {
+      $set: {
+        name: "Demo Customer",
+        role: "CUSTOMER",
+        passwordHash: userPassword,
+        updatedAt: now
+      },
+      $setOnInsert: {
+        email: "customer@cnc.local",
+        phone: "9920554661",
+        address: "Mulund East, Mumbai",
+        pincode: "400081",
+        emailVerified: null,
+        image: null,
+        createdAt: now
+      }
+    },
+    { upsert: true }
+  );
 
   for (const product of products) {
-    await prisma.product.upsert({
-      where: { slug: product.slug },
-      update: product,
-      create: product
-    });
+    await productsCollection.updateOne(
+      { slug: product.slug },
+      {
+        $set: { ...product, updatedAt: now },
+        $setOnInsert: { createdAt: now }
+      },
+      { upsert: true }
+    );
   }
 }
 
 main()
   .then(async () => {
-    await prisma.$disconnect();
+    await client.close();
   })
   .catch(async (error) => {
     console.error(error);
-    await prisma.$disconnect();
+    await client.close();
     process.exit(1);
   });

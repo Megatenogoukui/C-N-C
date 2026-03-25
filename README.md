@@ -4,7 +4,7 @@ Premium cake commerce scaffold for `C "N" C (Cakes "N" Chocolates)`, now split t
 
 - `Next.js` for the customer-facing frontend
 - `Go` kept in-repo as backend groundwork for future APIs and services
-- `PostgreSQL` as the primary database target
+- `MongoDB` as the primary database target
 
 ## Included
 
@@ -18,8 +18,6 @@ Premium cake commerce scaffold for `C "N" C (Cakes "N" Chocolates)`, now split t
 
 ```bash
 npm install
-npm run db:generate
-npm run db:push
 npm run db:seed
 npm run dev
 ```
@@ -42,21 +40,21 @@ GOCACHE=/tmp/gocache go test ./...
 
 - `app/`: Next.js routes and page composition
 - `components/`: shared UI building blocks
-- `lib/`: auth, Prisma data access, seeded storefront helpers, and admin actions
+- `lib/`: auth, native MongoDB data access, seeded storefront helpers, and admin actions
 - `internal/` and `cmd/`: Go backend groundwork
-- `prisma/`: PostgreSQL schema and seed script
+- `scripts/seed.mjs`: MongoDB seed script for demo data
 
 ## Database
 
-The project is now configured for PostgreSQL, not SQLite.
+The project is now configured for MongoDB.
 
-Example local URL:
+Example Atlas URL:
 
 ```bash
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/cnc_store"
+DATABASE_URL="mongodb+srv://username:password@cluster0.example.mongodb.net/cnc_store?retryWrites=true&w=majority"
 ```
 
-For production, use a managed Postgres provider such as Neon, Supabase, Render Postgres, or RDS.
+Use MongoDB Atlas or another managed MongoDB deployment. For a small business launch, Atlas is the simplest option.
 
 ## Remaining Live Integrations
 

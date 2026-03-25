@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { RequestStatus, Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { updateCustomRequestStatusAction } from "@/lib/admin";
 import { db } from "@/lib/db";
+import { REQUEST_STATUSES } from "@/lib/db-types";
 
 export const metadata: Metadata = {
   title: "Custom Cake Requests",
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function AdminRequestsPage() {
   const session = await auth();
   if (!session?.user) redirect("/login?callbackUrl=/admin/requests");
-  if (session.user.role !== Role.ADMIN) redirect("/account");
+  if (session.user.role !== "ADMIN") redirect("/account");
 
   const requests = await db.customCakeRequest.findMany({
     orderBy: { createdAt: "desc" }
@@ -38,7 +38,7 @@ export default async function AdminRequestsPage() {
                 <form action={updateCustomRequestStatusAction} style={{ display: "grid", gap: 10, minWidth: 240 }}>
                   <input type="hidden" name="id" value={request.id} />
                   <select className="select" data-testid={`admin-request-status-${request.id}`} name="status" defaultValue={request.status}>
-                    {Object.values(RequestStatus).map((status) => <option key={status} value={status}>{status}</option>)}
+                    {REQUEST_STATUSES.map((status) => <option key={status} value={status}>{status}</option>)}
                   </select>
                   <textarea className="textarea" data-testid={`admin-request-notes-${request.id}`} name="notes" placeholder="Internal notes" defaultValue={request.notes || ""} />
                   <button className="button-small" data-testid={`admin-request-save-${request.id}`} type="submit">Save Status</button>

@@ -58,6 +58,26 @@ export const forgotPasswordSchema = z.object({
   email: z.email().max(120)
 });
 
+export const registerSchema = z.object({
+  name: z.string().trim().min(2).max(80),
+  email: z.email().max(120),
+  phone: z.string().trim().regex(indianPhoneRegex, "Enter a valid 10-digit mobile number"),
+  address: z.string().trim().min(12).max(300),
+  pincode: z.string().trim().regex(pincodeRegex, "Enter a valid 6-digit pincode"),
+  password: z.string().min(8).max(100),
+  confirmPassword: z.string().min(8).max(100)
+}).refine((value) => value.password === value.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"]
+});
+
+export const profileSchema = z.object({
+  name: z.string().trim().min(2).max(80),
+  phone: z.string().trim().regex(indianPhoneRegex, "Enter a valid 10-digit mobile number"),
+  address: z.string().trim().min(12).max(300),
+  pincode: z.string().trim().regex(pincodeRegex, "Enter a valid 6-digit pincode")
+});
+
 export const resetPasswordSchema = z.object({
   token: z.string().trim().min(10),
   password: z.string().min(8).max(100),

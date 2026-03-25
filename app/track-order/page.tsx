@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { unstable_noStore as noStore } from "next/cache";
 import { getWhatsAppUrl } from "@/lib/business";
-import { orderStages } from "@/lib/storefront-data";
 import { db } from "@/lib/db";
+import type { OrderStatus } from "@/lib/db-types";
 
 type TrackingPageProps = {
   searchParams: Promise<{ order?: string; payment?: string }>;
@@ -13,13 +14,47 @@ export const metadata: Metadata = {
   description: "Track your cake order through confirmation, baking, dispatch, and delivery."
 };
 
+const TRACKING_STAGES: Array<{
+  key: Exclude<OrderStatus, "CANCELLED">;
+  title: string;
+  copy: string;
+}> = [
+  {
+    key: "PENDING",
+    title: "Pending",
+    copy: "Your order is received and waiting for kitchen confirmation."
+  },
+  {
+    key: "ACCEPTED",
+    title: "Accepted",
+    copy: "The team has reviewed your order and reserved a production slot."
+  },
+  {
+    key: "BAKING",
+    title: "Baking",
+    copy: "Your cake is now in preparation with decor and finishing underway."
+  },
+  {
+    key: "OUT_FOR_DELIVERY",
+    title: "Out for Delivery",
+    copy: "Your order has left the kitchen and is on the way."
+  },
+  {
+    key: "DELIVERED",
+    title: "Delivered",
+    copy: "The order has reached you. We hope the celebration went beautifully."
+  }
+];
+
+const TRACKING_ORDER: OrderStatus[] = ["PENDING", "ACCEPTED", "BAKING", "OUT_FOR_DELIVERY", "DELIVERED"];
+
 export default async function TrackOrderPage({ searchParams }: TrackingPageProps) {
+  noStore();
   const params = await searchParams;
   const order = params.order || "CNC-DEMO-0001";
   const orderRecord = await db.order.findUnique({ where: { orderNumber: order } });
-  const activeIndex = orderRecord
-    ? ["PENDING", "ACCEPTED", "BAKING", "OUT_FOR_DELIVERY", "DELIVERED"].indexOf(orderRecord.status)
-    : 0;
+  const activeIndex = orderRecord ? TRACKING_ORDER.indexOf(orderRecord.status) : 0;
+  const isCancelled = orderRecord?.status === "CANCELLED";
 
   return (
     <main className="section">
@@ -28,7 +63,7 @@ export default async function TrackOrderPage({ searchParams }: TrackingPageProps
         <div className="tracking-card">
           <h1 style={{ fontSize: 56 }}>Order {order}</h1>
           <p className="lead" style={{ marginTop: 16 }}>
-            This flow is intentionally clear and reassuring: your order is confirmed, batched for production, and visible through the final delivery stage.
+            Follow the order from review to delivery. Each stage unlocks only when the team moves your order forward.
           </p>
           {params.payment === "pending" || orderRecord?.paymentStatus === "PENDING" ? (
             <div className="info-card" style={{ marginTop: 20 }}>
@@ -46,19 +81,31 @@ export default async function TrackOrderPage({ searchParams }: TrackingPageProps
               </Link>
             </div>
           ) : null}
+          {isCancelled ? (
+            <div className="info-card" style={{ marginTop: 20, color: "#8f2d24" }}>
+              This order has been cancelled. Please contact WhatsApp support if you need clarification or a replacement order.
+            </div>
+          ) : null}
           <div className="tracking-grid">
-            {orderStages.map((stage, index) => (
-              <div className={`tracking-step ${index <= activeIndex ? "tracking-step-active" : ""}`} key={stage}>
-                <strong>{stage}</strong>
-                <p style={{ marginTop: 10 }}>
-                  {index === 0 && "Payment mode captured."}
-                  {index === 1 && "Kitchen slot reserved."}
-                  {index === 2 && "Decor team has started."}
-                  {index === 3 && "Dispatch pending."}
-                  {index === 4 && "Final confirmation awaits."}
-                </p>
-              </div>
-            ))}
+            {TRACKING_STAGES.map((stage, index) => {
+              const state = isCancelled
+                ? index === 0
+                  ? "tracking-step-cancelled"
+                  : "tracking-step-upcoming"
+                : index < activeIndex
+                  ? "tracking-step-complete"
+                  : index === activeIndex
+                    ? "tracking-step-current"
+                    : "tracking-step-upcoming";
+
+              return (
+                <div className={`tracking-step ${state}`} key={stage.key}>
+                  <strong>{stage.title}</strong>
+                  <p style={{ marginTop: 10 }}>{stage.copy}</p>
+                  {!isCancelled && index === activeIndex ? <span className="tracking-step-label">Current stage</span> : null}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

@@ -1,12 +1,12 @@
 "use server";
 
 import { randomUUID } from "crypto";
-import { PaymentStatus } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { businessConfig } from "@/lib/business";
 import { readCartEntries, writeCartEntries } from "@/lib/cart";
 import { db } from "@/lib/db";
+import { PAYMENT_STATUSES } from "@/lib/db-types";
 import { getProductBySlugs } from "@/lib/catalog";
 import { checkoutSchema, customCakeSchema } from "@/lib/validation";
 
@@ -100,7 +100,7 @@ export async function submitCheckout(formData: FormData) {
     data: {
       orderNumber: `CNC-${Date.now().toString().slice(-8)}-${randomUUID().slice(0, 4).toUpperCase()}`,
       paymentMode: checkout.payment,
-      paymentStatus: checkout.payment === "COD" ? PaymentStatus.COD_PENDING : PaymentStatus.PENDING,
+      paymentStatus: checkout.payment === "COD" ? PAYMENT_STATUSES[4] : PAYMENT_STATUSES[0],
       firstName: checkout.firstName,
       lastName: checkout.lastName,
       email: checkout.email,
@@ -113,7 +113,7 @@ export async function submitCheckout(formData: FormData) {
       subtotalInr: subtotal,
       deliveryInr: delivery,
       totalInr: total,
-      userId: session?.user?.id,
+      userId: session?.user?.id ?? null,
       items: {
         create: lines.map((line) => ({
           productId: line.product.id,
@@ -158,11 +158,11 @@ export async function submitCustomCake(formData: FormData) {
       brief: payload.brief,
       occasion: payload.occasion,
       eventDate: payload.eventDate,
-      servings: payload.servings,
+      servings: payload.servings ?? null,
       budget: payload.budget,
       flavorPreferences: payload.flavorPreferences,
       contactPreference: payload.contactPreference,
-      userId: session?.user?.id
+      userId: session?.user?.id ?? null
     }
   });
 

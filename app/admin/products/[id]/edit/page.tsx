@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Role } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { updateProductAction } from "@/lib/admin";
@@ -18,7 +17,7 @@ export const metadata: Metadata = {
 export default async function EditProductPage({ params, searchParams }: EditProductPageProps) {
   const session = await auth();
   if (!session?.user) redirect("/login?callbackUrl=/admin");
-  if (session.user.role !== Role.ADMIN) redirect("/account");
+  if (session.user.role !== "ADMIN") redirect("/account");
 
   const [{ id }, query] = await Promise.all([params, searchParams]);
   const product = await db.product.findUnique({ where: { id } });

@@ -3,9 +3,8 @@ import NextAuth from "next-auth";
 import { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcryptjs";
-import { db } from "@/lib/db";
+import { db, ensureGoogleUser } from "@/lib/db";
 
 const providers: any[] = [
   CredentialsProvider({
@@ -20,7 +19,7 @@ const providers: any[] = [
       if (!email || !password) return null;
 
       const user = await db.user.findUnique({ where: { email } });
-      if (!user?.passwordHash) return null;
+      if (!user?.passwordHash || user.blockedAt) return null;
 
       const valid = await bcrypt.compare(password, user.passwordHash);
       if (!valid) return null;
@@ -46,7 +45,6 @@ if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db) as any,
   providers,
   secret: process.env.AUTH_SECRET,
   session: { strategy: "jwt" },
@@ -54,9 +52,37 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login"
   },
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === "google" && user.email) {
+        const dbUser = await ensureGoogleUser({
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          provider: account.provider,
+          providerAccountId: account.providerAccountId
+        });
+        if (dbUser.blockedAt) {
+          return false;
+        }
+        (user as any).id = dbUser.id;
+        (user as any).role = dbUser.role;
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.role = (user as any).role;
+        token.sub = (user as any).id || token.sub;
+      }
+      if ((!token.role || !token.sub) && token.email) {
+        const dbUser = await db.user.findUnique({ where: { email: token.email } });
+        if (dbUser) {
+          if (dbUser.blockedAt) {
+            return {};
+          }
+          token.sub = dbUser.id;
+          token.role = dbUser.role;
+        }
       }
       return token;
     },

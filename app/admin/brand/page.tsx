@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { BrandAssetType, Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { uploadBrandAssetAction } from "@/lib/admin";
 import { db } from "@/lib/db";
+import { BRAND_ASSET_TYPES } from "@/lib/db-types";
 
 type BrandPageProps = {
   searchParams: Promise<{ error?: string }>;
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function BrandPage({ searchParams }: BrandPageProps) {
   const session = await auth();
   if (!session?.user) redirect("/login?callbackUrl=/admin/brand");
-  if (session.user.role !== Role.ADMIN) redirect("/account");
+  if (session.user.role !== "ADMIN") redirect("/account");
   const [params, assets] = await Promise.all([
     searchParams,
     db.brandAsset.findMany({ orderBy: { createdAt: "desc" } })
@@ -32,7 +32,7 @@ export default async function BrandPage({ searchParams }: BrandPageProps) {
           {params.error ? <div className="info-card" style={{ marginTop: 16, color: "#8f2d24" }}>{params.error}</div> : null}
           <form action={uploadBrandAssetAction} style={{ display: "grid", gap: 16, marginTop: 24 }}>
             <label><span className="field-label">Asset Label</span><input className="input" name="label" placeholder='Main logo' /></label>
-            <label><span className="field-label">Type</span><select className="select" name="type" defaultValue={BrandAssetType.LOGO}><option value={BrandAssetType.LOGO}>Logo</option><option value={BrandAssetType.POSTER}>Poster</option></select></label>
+            <label><span className="field-label">Type</span><select className="select" name="type" defaultValue={BRAND_ASSET_TYPES[0]}><option value={BRAND_ASSET_TYPES[0]}>Logo</option><option value={BRAND_ASSET_TYPES[1]}>Poster</option></select></label>
             <label><span className="field-label">Image</span><input className="input" type="file" name="image" accept="image/*" required /></label>
             <button className="button" type="submit">Upload Asset</button>
           </form>

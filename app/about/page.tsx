@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { getStoryEntries } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Our Story",
   description: 'C "N" C blends homemade cakes, brownies, chocolates, and celebration orders into a warm single-city brand.'
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
   const images = [
     "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80",
     "https://images.unsplash.com/photo-1521302200778-33500795e128?auto=format&fit=crop&w=1200&q=80",
     "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=1200&q=80",
     "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80"
   ];
+  const stories = await getStoryEntries();
 
   return (
     <main className="section">
@@ -25,14 +27,12 @@ export default function AboutPage() {
               C &quot;N&quot; C is positioned as a warm, homemade treats brand with room for serious commerce depth. The experience avoids marketplace clutter and focuses on clear ordering, strong trust, and a memorable bakery identity for Mulund East, Mumbai.
             </p>
             <div style={{ display: "grid", gap: 18, marginTop: 28 }}>
-              <div className="info-card">
-                <h3 style={{ fontSize: 24 }}>Why this architecture</h3>
-                <p style={{ marginTop: 10 }}>Next.js handles the presentation, SEO, and polished UI while Go remains the backend direction for services, orders, and integrations.</p>
-              </div>
-              <div className="info-card">
-                <h3 style={{ fontSize: 24 }}>What will change later</h3>
-                <p style={{ marginTop: 10 }}>Product data, real media, payments, notifications, and admin modules can move from seeded state to persistent services without redesigning the customer flow.</p>
-              </div>
+              {stories.map((story) => (
+                <div className="info-card" key={story.id}>
+                  <h3 style={{ fontSize: 24 }}>{story.title}</h3>
+                  <p style={{ marginTop: 10 }}>{story.body}</p>
+                </div>
+              ))}
             </div>
           </div>
           <div className="image-composition">

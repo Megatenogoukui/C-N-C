@@ -15,6 +15,7 @@ type MenuDrawerProps = {
   supportHref: string;
   accountHref?: string;
   accountLabel?: string;
+  variant?: "store" | "admin";
 };
 
 export function MenuDrawer({
@@ -22,7 +23,8 @@ export function MenuDrawer({
   navItems,
   supportHref,
   accountHref,
-  accountLabel
+  accountLabel,
+  variant = "store"
 }: MenuDrawerProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -72,23 +74,27 @@ export function MenuDrawer({
       {open ? <button aria-label="Close menu" className="menu-drawer-backdrop" onClick={() => setOpen(false)} type="button" /> : null}
       <div className={`menu-drawer-panel ${open ? "menu-drawer-panel-open" : ""}`}>
         <div className="menu-drawer-header">
-          <strong>Menu</strong>
-          <span>{cartCount ? `${cartCount} item(s) in cart` : "Freshly homemade treats"}</span>
+          <strong>{variant === "admin" ? "Admin" : "Menu"}</strong>
+          <span>{variant === "admin" ? "Manage customers, content, and orders" : cartCount ? `${cartCount} item(s) in cart` : "Freshly homemade treats"}</span>
         </div>
         {navItems.map((item) => (
           <Link href={item.href} key={item.href} onClick={() => setOpen(false)}>
             {item.label}
           </Link>
         ))}
-        <Link href="/cart" onClick={() => setOpen(false)}>
-          Cart{cartCount ? ` (${cartCount})` : ""}
-        </Link>
-        <Link href="/track-order" onClick={() => setOpen(false)}>
-          Track Order
-        </Link>
-        <Link href={supportHref} onClick={() => setOpen(false)}>
-          WhatsApp Support
-        </Link>
+        {variant === "store" ? (
+          <>
+            <Link href="/cart" onClick={() => setOpen(false)}>
+              Cart{cartCount ? ` (${cartCount})` : ""}
+            </Link>
+            <Link href="/track-order" onClick={() => setOpen(false)}>
+              Track Order
+            </Link>
+            <Link href={supportHref} onClick={() => setOpen(false)}>
+              WhatsApp Support
+            </Link>
+          </>
+        ) : null}
         {accountHref && accountLabel ? (
           <Link href={accountHref} onClick={() => setOpen(false)}>
             {accountLabel}

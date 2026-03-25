@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { OrderStatus, Role } from "@prisma/client";
-import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { unstable_noStore as noStore } from "next/cache";
 import { deleteProductAction, updateOrderStatusAction } from "@/lib/admin";
 import { db } from "@/lib/db";
+import type { OrderWithItemsRecord } from "@/lib/db-types";
+import { ORDER_STATUSES } from "@/lib/db-types";
 import { formatInr } from "@/lib/storefront-data";
 
 export const metadata: Metadata = {
@@ -13,38 +13,40 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminPage() {
-  const session = await auth();
-  if (!session?.user) {
-    redirect("/login?callbackUrl=/admin");
-  }
-  if (session.user.role !== Role.ADMIN) {
-    redirect("/account");
-  }
-
-  const [products, orders, assets, requests] = await Promise.all([
+  noStore();
+  const [products, orders, assets, requests, users] = await Promise.all([
     db.product.findMany({ orderBy: { createdAt: "desc" } }),
-    db.order.findMany({ include: { items: true }, orderBy: { createdAt: "desc" }, take: 10 }),
+    db.order.findMany({ include: { items: true }, orderBy: { createdAt: "desc" }, take: 10 }) as Promise<OrderWithItemsRecord[]>,
     db.brandAsset.findMany({ orderBy: { createdAt: "desc" } }),
-    db.customCakeRequest.findMany({ orderBy: { createdAt: "desc" }, take: 8 })
+    db.customCakeRequest.findMany({ orderBy: { createdAt: "desc" }, take: 8 }),
+    db.user.findMany({ orderBy: { createdAt: "desc" } })
   ]);
 
   return (
-    <main className="section">
-      <div className="container">
+    <section className="panel admin-panel">
+      <div className="admin-panel-header">
         <span className="eyebrow">Admin</span>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "flex-end", flexWrap: "wrap" }}>
           <div>
-            <h1 style={{ fontSize: 48 }}>Control products, brand assets, and orders.</h1>
-            <p style={{ marginTop: 12 }}>Upload logos, create products, and accept or cancel orders from one dashboard.</p>
+            <h1>Admin dashboard.</h1>
+            <p style={{ marginTop: 12 }}>Monitor users, orders, requests, products, and customer-facing content from one admin workspace.</p>
           </div>
           <div className="cta-row">
             <Link className="button" href="/admin/products/new">New Product</Link>
-            <Link className="button-ghost" href="/admin/brand">Brand Assets</Link>
-            <Link className="button-ghost" href="/admin/requests">Custom Requests</Link>
+            <Link className="button-ghost" href="/admin/orders">All Orders</Link>
+            <Link className="button-ghost" href="/admin/users">Users</Link>
           </div>
         </div>
+      </div>
 
-        <div className="custom-layout" style={{ marginTop: 28 }}>
+        <div className="admin-summary-grid" style={{ marginTop: 28 }}>
+          <div className="info-card"><strong>{users.length}</strong><p style={{ marginTop: 8 }}>registered users</p></div>
+          <div className="info-card"><strong>{orders.length}</strong><p style={{ marginTop: 8 }}>recent orders loaded</p></div>
+          <div className="info-card"><strong>{requests.length}</strong><p style={{ marginTop: 8 }}>custom requests in queue</p></div>
+          <div className="info-card"><strong>{assets.length}</strong><p style={{ marginTop: 8 }}>brand assets uploaded</p></div>
+        </div>
+
+        <div className="custom-layout admin-dashboard-layout" style={{ marginTop: 28 }}>
           <section style={{ display: "grid", gap: 18 }}>
             <div className="panel">
               <h3 style={{ fontSize: 26 }}>Products</h3>
@@ -72,6 +74,7 @@ export default async function AdminPage() {
             </div>
             <div className="panel">
               <h3 style={{ fontSize: 26 }}>Orders</h3>
+              <p className="subtle" style={{ marginTop: 8, marginBottom: 12 }}>Admin can follow every customer order from pending to delivered here.</p>
               {orders.length ? orders.map((order) => (
                 <div
                   data-testid={`admin-order-${order.orderNumber}`}
@@ -83,6 +86,12 @@ export default async function AdminPage() {
                       <strong>{order.orderNumber}</strong>
                       <p>{order.firstName} {order.lastName} • {order.items.length} item(s) • {formatInr(order.totalInr)}</p>
                       <p className="subtle">{order.status.replaceAll("_", " ")} • {order.paymentMode} • {order.paymentStatus.replaceAll("_", " ")}</p>
+                      <p className="subtle" style={{ marginTop: 6 }}>{order.email} • {order.phone}</p>
+                      <p className="subtle">{order.address} • {order.pincode}</p>
+                      <p className="subtle">Delivery: {order.deliveryDate} • {order.deliverySlot}</p>
+                      <div className="pill-list" style={{ marginTop: 10 }}>
+                        <Link className="button-small" href={`/track-order?order=${order.orderNumber}`}>Customer View</Link>
+                      </div>
                     </div>
                     <div className="cta-row">
                       <form action={updateOrderStatusAction} style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -94,7 +103,7 @@ export default async function AdminPage() {
                           defaultValue={order.status}
                           style={{ minWidth: 180 }}
                         >
-                          {Object.values(OrderStatus).map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}
+                          {ORDER_STATUSES.map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}
                         </select>
                         <button
                           className="button-small"
@@ -130,17 +139,29 @@ export default async function AdminPage() {
 
           <aside style={{ display: "grid", gap: 18 }}>
             <div className="info-card">
-              <h3 style={{ fontSize: 24 }}>Brand Assets</h3>
-              <p style={{ marginTop: 8 }}>{assets.length} uploaded asset(s)</p>
-              <p className="subtle" style={{ marginTop: 8 }}>Logos and posters uploaded here can be used across the storefront shell.</p>
+              <h3 style={{ fontSize: 24 }}>Users</h3>
+              <p style={{ marginTop: 8 }}>{users.filter((user) => user.role === "ADMIN").length} admins • {users.filter((user) => !user.blockedAt).length} active users</p>
+              <div className="pill-list" style={{ marginTop: 12 }}>
+                <Link className="button-small" href="/admin/users">Open User Panel</Link>
+              </div>
             </div>
             <div className="info-card">
-              <h3 style={{ fontSize: 24 }}>Admin Access</h3>
-              <p style={{ marginTop: 8 }}>Admin-only actions are protected by the session role. OAuth users will default to customer unless you elevate them in the database.</p>
+              <h3 style={{ fontSize: 24 }}>Story & Journal</h3>
+              <p style={{ marginTop: 8 }}>Manage About-page story blocks separately from Journal entries customers see on the storefront.</p>
+              <div className="pill-list" style={{ marginTop: 12 }}>
+                <Link className="button-small" href="/admin/story">Story</Link>
+                <Link className="button-small" href="/admin/journal">Journal</Link>
+              </div>
+            </div>
+            <div className="info-card">
+              <h3 style={{ fontSize: 24 }}>Brand Assets</h3>
+              <p style={{ marginTop: 8 }}>{assets.length} uploaded asset(s)</p>
+              <div className="pill-list" style={{ marginTop: 12 }}>
+                <Link className="button-small" href="/admin/brand">Manage Assets</Link>
+              </div>
             </div>
           </aside>
         </div>
-      </div>
-    </main>
+    </section>
   );
 }

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { auth } from "@/auth";
 import { getBrandAssets } from "@/lib/brand";
 import { businessConfig, getWhatsAppUrl } from "@/lib/business";
-import { readCartLines } from "@/lib/cart";
+import { readCartCount } from "@/lib/cart";
 import { MenuDrawer } from "@/components/menu-drawer";
 
 const navItems = [
@@ -13,14 +13,26 @@ const navItems = [
   { href: "/blog", label: "Journal" }
 ];
 
+const adminNavItems = [
+  { href: "/admin", label: "Dashboard" },
+  { href: "/admin/users", label: "Users" },
+  { href: "/admin/orders", label: "Orders" },
+  { href: "/admin/requests", label: "Custom Requests" },
+  { href: "/admin/story", label: "Story" },
+  { href: "/admin/journal", label: "Journal" },
+  { href: "/admin/brand", label: "Brand Assets" }
+];
+
 export async function SiteChrome({
   children
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-  const cart = await readCartLines();
-  const assets = await getBrandAssets();
+  const [session, cartCount, assets] = await Promise.all([
+    auth(),
+    readCartCount(),
+    getBrandAssets()
+  ]);
 
   return (
     <div className="page-shell">
@@ -29,9 +41,10 @@ export async function SiteChrome({
           <MenuDrawer
             accountHref={session?.user ? (session.user.role === "ADMIN" ? "/admin" : "/account") : undefined}
             accountLabel={session?.user ? (session.user.role === "ADMIN" ? "Admin" : "Account") : undefined}
-            cartCount={cart.count}
-            navItems={navItems}
+            cartCount={cartCount}
+            navItems={session?.user?.role === "ADMIN" ? adminNavItems : navItems}
             supportHref={getWhatsAppUrl("Hello C N C, I need help with an order.")}
+            variant={session?.user?.role === "ADMIN" ? "admin" : "store"}
           />
           <Link href="/" className="brand-mark site-brand">
             {assets.logo ? (

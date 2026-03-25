@@ -3,27 +3,27 @@
 import { randomBytes } from "crypto";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { forgotPasswordSchema, resetPasswordSchema } from "@/lib/validation";
+import { forgotPasswordSchema, profileSchema, registerSchema, resetPasswordSchema } from "@/lib/validation";
 
 export async function registerAction(formData: FormData) {
-  const name = String(formData.get("name") || "").trim();
-  const email = String(formData.get("email") || "").trim().toLowerCase();
-  const password = String(formData.get("password") || "");
-  const confirmPassword = String(formData.get("confirmPassword") || "");
+  const parsed = registerSchema.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    phone: formData.get("phone"),
+    address: formData.get("address"),
+    pincode: formData.get("pincode"),
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword")
+  });
 
-  if (!name || !email || !password || !confirmPassword) {
-    redirect("/signup?error=Please%20fill%20all%20fields");
+  if (!parsed.success) {
+    const message = parsed.error.issues[0]?.message || "Please fill all required fields";
+    redirect(`/signup?error=${encodeURIComponent(message)}`);
   }
 
-  if (password.length < 8) {
-    redirect("/signup?error=Password%20must%20be%20at%20least%208%20characters");
-  }
-
-  if (password !== confirmPassword) {
-    redirect("/signup?error=Passwords%20do%20not%20match");
-  }
-
+  const { name, email, phone, address, pincode, password } = parsed.data;
   const existing = await db.user.findUnique({ where: { email } });
   if (existing) {
     redirect("/signup?error=An%20account%20already%20exists%20for%20that%20email");
@@ -35,6 +35,9 @@ export async function registerAction(formData: FormData) {
     data: {
       name,
       email,
+      phone,
+      address,
+      pincode,
       passwordHash
     }
   });
@@ -95,16 +98,40 @@ export async function resetPasswordAction(formData: FormData) {
 
   const passwordHash = await bcrypt.hash(parsed.data.password, 10);
 
-  await db.$transaction([
-    db.user.update({
-      where: { id: resetToken.userId },
-      data: { passwordHash }
-    }),
-    db.passwordResetToken.update({
-      where: { id: resetToken.id },
-      data: { usedAt: new Date() }
-    })
-  ]);
+  await db.user.update({
+    where: { id: resetToken.userId },
+    data: { passwordHash }
+  });
+  await db.passwordResetToken.update({
+    where: { id: resetToken.id },
+    data: { usedAt: new Date() }
+  });
 
   redirect("/login?reset=1");
+}
+
+export async function updateProfileAction(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    redirect("/login?callbackUrl=/account");
+  }
+
+  const parsed = profileSchema.safeParse({
+    name: formData.get("name"),
+    phone: formData.get("phone"),
+    address: formData.get("address"),
+    pincode: formData.get("pincode")
+  });
+
+  if (!parsed.success) {
+    const message = parsed.error.issues[0]?.message || "Profile details are invalid";
+    redirect(`/account?error=${encodeURIComponent(message)}`);
+  }
+
+  await db.user.update({
+    where: { id: session.user.id },
+    data: parsed.data
+  });
+
+  redirect("/account?updated=1");
 }
