@@ -86,3 +86,11 @@ export const resetPasswordSchema = z.object({
   message: "Passwords do not match",
   path: ["confirmPassword"]
 });
+
+export const reviewSchema = z.object({
+  orderId: z.string().trim().min(1),
+  productId: z.string().trim().min(1),
+  rating: z.coerce.number().int().min(1).max(5),
+  title: z.string().trim().max(80).optional().default(""),
+  body: z.string().trim().max(600).optional().default("")
+});

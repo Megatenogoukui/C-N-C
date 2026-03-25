@@ -1,8 +1,13 @@
 import { db } from "@/lib/db";
+import { withTimeout } from "@/lib/with-timeout";
 
 export async function getBrandAssets() {
   try {
-    const assets = await db.brandAsset.findMany({ orderBy: { createdAt: "desc" } });
+    const assets = await withTimeout(
+      db.brandAsset.findMany({ orderBy: { createdAt: "desc" } }),
+      1200,
+      "brand assets lookup"
+    );
     return {
       logo: assets.find((asset) => asset.type === "LOGO"),
       poster: assets.find((asset) => asset.type === "POSTER")

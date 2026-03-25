@@ -9,6 +9,7 @@ import {
   OrderRecord,
   PasswordResetTokenRecord,
   ProductRecord,
+  ReviewRecord,
   Role,
   UserRecord
 } from "@/lib/db-types";
@@ -35,9 +36,9 @@ function createClient() {
     minPoolSize: 1,
     retryReads: true,
     retryWrites: true,
-    connectTimeoutMS: 8000,
-    serverSelectionTimeoutMS: 8000,
-    socketTimeoutMS: 15000
+    connectTimeoutMS: 2500,
+    serverSelectionTimeoutMS: 2500,
+    socketTimeoutMS: 5000
   });
 }
 
@@ -84,6 +85,7 @@ type BrandAssetDoc = WithId<BrandAssetRecord>;
 type ContentEntryDoc = WithId<ContentEntryRecord>;
 type CustomCakeRequestDoc = WithId<CustomCakeRequestRecord>;
 type PasswordResetTokenDoc = WithId<PasswordResetTokenRecord>;
+type ReviewDoc = WithId<ReviewRecord>;
 
 type FindManyOptions = {
   orderBy?: { createdAt: "desc" | "asc" };
@@ -100,7 +102,8 @@ async function ensureIndexes() {
     products,
     orders,
     brandAssets,
-    contentEntries
+    contentEntries,
+    reviews
   ] = await Promise.all([
     getCollection<UserDoc>("users"),
     getCollection<AccountDoc>("accounts"),
@@ -110,7 +113,8 @@ async function ensureIndexes() {
     getCollection<ProductDoc>("products"),
     getCollection<OrderDoc>("orders"),
     getCollection<BrandAssetDoc>("brandAssets"),
-    getCollection<ContentEntryDoc>("contentEntries")
+    getCollection<ContentEntryDoc>("contentEntries"),
+    getCollection<ReviewDoc>("reviews")
   ]);
 
   await Promise.all([
@@ -124,7 +128,9 @@ async function ensureIndexes() {
     orders.createIndex({ orderNumber: 1 }, { unique: true }),
     brandAssets.createIndex({ createdAt: -1 }),
     contentEntries.createIndex({ slug: 1 }, { unique: true }),
-    contentEntries.createIndex({ type: 1, sortOrder: 1 })
+    contentEntries.createIndex({ type: 1, sortOrder: 1 }),
+    reviews.createIndex({ productId: 1, createdAt: -1 }),
+    reviews.createIndex({ userId: 1, orderId: 1, productId: 1 }, { unique: true })
   ]);
 }
 
@@ -269,6 +275,11 @@ export const db = {
     async findMany({ where = {}, orderBy, take }: { where?: Document; orderBy?: { createdAt: "desc" | "asc" }; take?: number } = {}) {
       const collection = await getCollection<ProductDoc>("products");
       const filter: Document = {};
+      if ("id" in where && typeof where.id === "object" && where.id && "in" in where.id) {
+        filter._id = { $in: (where.id as { in: string[] }).in.map(asId) };
+      } else if ("id" in where && typeof where.id === "string") {
+        filter._id = asId(where.id);
+      }
       if ("active" in where) filter.active = where.active;
       if ("flavor" in where) filter.flavor = where.flavor;
       if ("eggless" in where) filter.eggless = where.eggless;
@@ -497,16 +508,88 @@ export const db = {
         items: items.filter((item) => item.orderId === order.id)
       }));
     },
-    async findUnique({ where }: { where: { orderNumber?: string; id?: string } }) {
+    async findUnique({
+      where,
+      include
+    }: {
+      where: { orderNumber?: string; id?: string };
+      include?: { items?: boolean };
+    }) {
       const collection = await getCollection<OrderDoc>("orders");
-      if (where.orderNumber) return mapId(await collection.findOne({ orderNumber: where.orderNumber })) as OrderRecord | null;
-      if (where.id) return mapId(await collection.findOne({ _id: asId(where.id) })) as OrderRecord | null;
-      return null;
+      let order: OrderRecord | null = null;
+      if (where.orderNumber) order = mapId(await collection.findOne({ orderNumber: where.orderNumber })) as OrderRecord | null;
+      if (where.id) order = mapId(await collection.findOne({ _id: asId(where.id) })) as OrderRecord | null;
+      if (!order) return null;
+      if (!include?.items) return order;
+      const itemCollection = await getCollection<OrderItemDoc>("orderItems");
+      const items = mapMany(await itemCollection.find({ orderId: order.id }).toArray()) as OrderItemRecord[];
+      return { ...order, items };
     },
     async update({ where, data }: { where: { id: string }; data: Partial<OrderRecord> }) {
       const collection = await getCollection<OrderDoc>("orders");
       await collection.updateOne({ _id: asId(where.id) }, { $set: { ...data, updatedAt: new Date() } });
       return mapId(await collection.findOne({ _id: asId(where.id) })) as OrderRecord | null;
+    }
+  },
+  review: {
+    async findMany({
+      where = {},
+      include,
+      orderBy,
+      take
+    }: {
+      where?: { productId?: string; userId?: string; orderId?: string };
+      include?: { user?: boolean };
+      orderBy?: { createdAt: "desc" | "asc" };
+      take?: number;
+    } = {}) {
+      const collection = await getCollection<ReviewDoc>("reviews");
+      const filter: Document = {};
+      if (where.productId) filter.productId = where.productId;
+      if (where.userId) filter.userId = where.userId;
+      if (where.orderId) filter.orderId = where.orderId;
+      const reviews = mapMany(await applyFindMany(collection, filter, { orderBy, take })) as ReviewRecord[];
+      if (!include?.user) return reviews;
+      const userIds = [...new Set(reviews.map((review) => review.userId))];
+      const users = userIds.length
+        ? mapMany(await (await getCollection<UserDoc>("users")).find({ _id: { $in: userIds.map(asId) } }).toArray()) as UserRecord[]
+        : [];
+      const userMap = new Map(users.map((user) => [user.id, user]));
+      return reviews.map((review) => ({
+        ...review,
+        user: userMap.get(review.userId) ? { id: review.userId, name: userMap.get(review.userId)?.name || null } : null
+      }));
+    },
+    async findUnique({
+      where
+    }: {
+      where: { userId_orderId_productId: { userId: string; orderId: string; productId: string } };
+    }) {
+      const collection = await getCollection<ReviewDoc>("reviews");
+      return mapId(await collection.findOne(where.userId_orderId_productId)) as ReviewRecord | null;
+    },
+    async create({ data }: { data: Omit<ReviewRecord, "id" | "createdAt" | "updatedAt"> }) {
+      const collection = await getCollection<ReviewDoc>("reviews");
+      const now = new Date();
+      const doc = { ...data, createdAt: now, updatedAt: now };
+      const result = await collection.insertOne(doc as ReviewDoc);
+      return mapId({ _id: result.insertedId, ...doc } as ReviewDoc) as ReviewRecord;
+    },
+    async update({ where, data }: { where: { id: string }; data: Partial<ReviewRecord> }) {
+      const collection = await getCollection<ReviewDoc>("reviews");
+      await collection.updateOne({ _id: asId(where.id) }, { $set: { ...data, updatedAt: new Date() } });
+      return mapId(await collection.findOne({ _id: asId(where.id) })) as ReviewRecord | null;
+    },
+    async aggregateForProduct(productId: string) {
+      const collection = await getCollection<ReviewDoc>("reviews");
+      const [result] = await collection.aggregate([
+        { $match: { productId } },
+        { $group: { _id: "$productId", average: { $avg: "$rating" }, count: { $sum: 1 } } }
+      ]).toArray();
+      return {
+        rating: result?.average ? Number(result.average.toFixed(1)) : 0,
+        reviews: result?.count || 0
+      };
     }
   }
 };

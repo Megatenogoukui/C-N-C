@@ -8,7 +8,9 @@ import { readCartEntries, writeCartEntries } from "@/lib/cart";
 import { db } from "@/lib/db";
 import { PAYMENT_STATUSES } from "@/lib/db-types";
 import { getProductBySlugs } from "@/lib/catalog";
-import { checkoutSchema, customCakeSchema } from "@/lib/validation";
+import { canReviewProduct } from "@/lib/reviews";
+import { checkoutSchema, customCakeSchema, reviewSchema } from "@/lib/validation";
+import { revalidatePath } from "next/cache";
 
 export async function addToCart(formData: FormData) {
   const slug = String(formData.get("slug") || "");
@@ -167,4 +169,84 @@ export async function submitCustomCake(formData: FormData) {
   });
 
   redirect("/custom-cakes?submitted=1");
+}
+
+export async function submitReview(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    redirect("/login?callbackUrl=/account/orders");
+  }
+
+  const parsed = reviewSchema.safeParse({
+    orderId: formData.get("orderId"),
+    productId: formData.get("productId"),
+    rating: formData.get("rating"),
+    title: formData.get("title"),
+    body: formData.get("body")
+  });
+
+  if (!parsed.success) {
+    const message = parsed.error.issues[0]?.message || "Review details are invalid";
+    redirect(`/account/orders?error=${encodeURIComponent(message)}`);
+  }
+
+  const payload = parsed.data;
+  const allowed = await canReviewProduct({
+    userId: session.user.id,
+    orderId: payload.orderId,
+    productId: payload.productId
+  });
+
+  if (!allowed) {
+    redirect("/account/orders?error=You%20can%20only%20review%20products%20from%20delivered%20orders");
+  }
+
+  const existing = await db.review.findUnique({
+    where: {
+      userId_orderId_productId: {
+        userId: session.user.id,
+        orderId: payload.orderId,
+        productId: payload.productId
+      }
+    }
+  });
+
+  if (existing) {
+    await db.review.update({
+      where: { id: existing.id },
+      data: {
+        rating: payload.rating,
+        title: payload.title || null,
+        body: payload.body || null
+      }
+    });
+  } else {
+    await db.review.create({
+      data: {
+        userId: session.user.id,
+        orderId: payload.orderId,
+        productId: payload.productId,
+        rating: payload.rating,
+        title: payload.title || null,
+        body: payload.body || null
+      }
+    });
+  }
+
+  const aggregate = await db.review.aggregateForProduct(payload.productId);
+  await db.product.update({
+    where: { id: payload.productId },
+    data: {
+      rating: aggregate.reviews ? aggregate.rating : 0,
+      reviews: aggregate.reviews
+    }
+  });
+  const product = await db.product.findUnique({ where: { id: payload.productId } });
+
+  revalidatePath("/account");
+  revalidatePath("/account/orders");
+  if (product?.slug) {
+    revalidatePath(`/product/${product.slug}`);
+  }
+  redirect("/account/orders?reviewed=1");
 }

@@ -933,6 +933,35 @@ p {
   max-width: 1120px;
 }
 
+.account-order-detail-list,
+.product-review-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.account-order-detail-card,
+.product-review-card {
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(255, 250, 243, 0.82);
+  border: 1px solid rgba(200, 170, 150, 0.4);
+}
+
+.account-order-detail-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.review-form,
+.product-review-section {
+  display: grid;
+  gap: 14px;
+}
+
 .account-topbar {
   display: flex;
   align-items: flex-end;

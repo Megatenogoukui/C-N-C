@@ -130,12 +130,15 @@ async function AccountPageInner({ searchParams }: AccountPageProps) {
               <div className="account-card-header">
                 <div>
                   <h2>Past Orders</h2>
-                  <p>View your full order history, delivery details, payment mode, and track any order again.</p>
+                  <p>View your full order history, delivery details, tracking links, and review options.</p>
                 </div>
+                <Link className="account-card-action" href="/account/orders">
+                  View all orders
+                </Link>
               </div>
               {orders.length ? (
                 <div className="account-history-list">
-                  {orders.map((order: (typeof orders)[number]) => (
+                  {orders.slice(0, 3).map((order: (typeof orders)[number]) => (
                     <article className="account-history-card" key={`history-${order.id}`}>
                       <div className="account-history-header">
                         <div>
@@ -154,6 +157,7 @@ async function AccountPageInner({ searchParams }: AccountPageProps) {
                       </ul>
                       <div className="pill-list" style={{ marginTop: 14 }}>
                         <Link className="button-small" href={`/track-order?order=${order.orderNumber}`}>Track this order</Link>
+                        <Link className="button-ghost" href="/account/orders">Review items</Link>
                       </div>
                     </article>
                   ))}

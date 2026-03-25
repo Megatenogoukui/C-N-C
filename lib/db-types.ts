@@ -189,3 +189,19 @@ export type ContentEntryRecord = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type ReviewRecord = {
+  id: string;
+  userId: string;
+  orderId: string;
+  productId: string;
+  rating: number;
+  title: string | null;
+  body: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type ReviewWithUserRecord = ReviewRecord & {
+  user: Pick<UserRecord, "id" | "name"> | null;
+};

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { addToCart } from "@/app/actions";
 import { formatInr } from "@/lib/storefront-data";
 import { getProductBySlug } from "@/lib/catalog";
+import { getProductReviews } from "@/lib/reviews";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -30,6 +31,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (!product) {
     notFound();
   }
+
+  const reviews = await getProductReviews(product.id);
 
   return (
     <main className="section">
@@ -131,6 +134,33 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </Link>
             </div>
           </form>
+
+          <div className="product-review-section">
+            <div className="account-card-header">
+              <div>
+                <h2>Customer Reviews</h2>
+                <p>Recent ratings from customers who ordered this product.</p>
+              </div>
+            </div>
+            {reviews.length ? (
+              <div className="product-review-list">
+                {reviews.map((review) => (
+                  <article className="product-review-card" key={review.id}>
+                    <div className="rating-row">
+                      <strong>{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</strong>
+                      <span className="subtle">{review.user?.name || "Verified customer"}</span>
+                    </div>
+                    {review.title ? <h3 className="compact-card-title" style={{ marginTop: 10 }}>{review.title}</h3> : null}
+                    {review.body ? <p style={{ marginTop: 8 }}>{review.body}</p> : null}
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="info-card" style={{ marginTop: 18 }}>
+                No customer reviews yet. Delivered orders will be able to rate this product from the account orders page.
+              </div>
+            )}
+          </div>
         </section>
       </div>
     </main>

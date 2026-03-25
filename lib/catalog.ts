@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { products as fallbackProducts } from "@/lib/storefront-data";
+import { withTimeout } from "@/lib/with-timeout";
 
 export type StoreAddOn = { name: string; priceInr: number };
 
@@ -92,19 +93,23 @@ export function mapProduct(product: Awaited<ReturnType<typeof db.product.findFir
 
 export async function getProducts(filters?: { occasion?: string; flavor?: string; eggless?: boolean }) {
   try {
-    const products = await db.product.findMany({
-      where: {
-        active: true,
-        ...(filters?.occasion
-          ? {
-              OR: [{ occasion: filters.occasion }, { category: filters.occasion }]
-            }
-          : {}),
-        ...(filters?.flavor ? { flavor: filters.flavor } : {}),
-        ...(filters?.eggless ? { eggless: true } : {})
-      },
-      orderBy: { createdAt: "desc" }
-    });
+    const products = await withTimeout(
+      db.product.findMany({
+        where: {
+          active: true,
+          ...(filters?.occasion
+            ? {
+                OR: [{ occasion: filters.occasion }, { category: filters.occasion }]
+              }
+            : {}),
+          ...(filters?.flavor ? { flavor: filters.flavor } : {}),
+          ...(filters?.eggless ? { eggless: true } : {})
+        },
+        orderBy: { createdAt: "desc" }
+      }),
+      1200,
+      "catalog lookup"
+    );
     return products.map(mapProduct);
   } catch (error) {
     console.error("catalog lookup failed", error);
@@ -125,7 +130,7 @@ export async function getProducts(filters?: { occasion?: string; flavor?: string
 
 export async function getProductBySlug(slug: string) {
   try {
-    const product = await db.product.findUnique({ where: { slug } });
+    const product = await withTimeout(db.product.findUnique({ where: { slug } }), 1200, "product lookup");
     return product ? mapProduct(product) : null;
   } catch (error) {
     console.error("product lookup failed", error);
@@ -135,9 +140,13 @@ export async function getProductBySlug(slug: string) {
 
 export async function getProductBySlugs(slugs: string[]) {
   try {
-    const products = await db.product.findMany({
-      where: { slug: { in: slugs }, active: true }
-    });
+    const products = await withTimeout(
+      db.product.findMany({
+        where: { slug: { in: slugs }, active: true }
+      }),
+      1200,
+      "product batch lookup"
+    );
     const map = new Map(products.map((product) => [product.slug, mapProduct(product)]));
     return slugs.map((slug) => map.get(slug)).filter(Boolean) as StoreProduct[];
   } catch (error) {
