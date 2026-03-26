@@ -3,15 +3,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { submitCustomCake } from "@/app/actions";
 import { getWhatsAppUrl } from "@/lib/business";
+import { buildPageMetadata } from "@/lib/seo";
 
 type CustomPageProps = {
   searchParams: Promise<{ submitted?: string; error?: string }>;
 };
 
 export const metadata: Metadata = {
-  title: "Custom Cakes",
-  description:
-    "Submit a bespoke cake inquiry with inspiration images, event details, budget, servings, and preferred follow-up channel."
+  ...buildPageMetadata({
+    title: "Custom Cakes in Mulund",
+    description:
+      "Submit a bespoke cake inquiry for birthdays, weddings, milestones, and theme cakes in Mulund East with event details, budget, servings, and reference ideas.",
+    path: "/custom-cakes",
+    keywords: ["custom cakes Mulund", "theme cakes Mulund East", "wedding cakes Mumbai"]
+  })
 };
 
 export default async function CustomCakesPage({ searchParams }: CustomPageProps) {

@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
 import { getJournalEntries } from "@/lib/content";
+import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Journal",
-  description: "Editorial content for cake occasions, flavor guides, gifting ideas, and local SEO growth."
+  ...buildPageMetadata({
+    title: "Cake Journal",
+    description:
+      "Guides on birthday cakes in Mulund, custom cake planning, gifting ideas, and local bakery tips from C N C Cakes N Chocolates.",
+    path: "/blog",
+    keywords: ["cake blog Mulund", "birthday cake guide Mumbai", "custom cake planning"]
+  })
 };
 
 export default async function BlogPage() {

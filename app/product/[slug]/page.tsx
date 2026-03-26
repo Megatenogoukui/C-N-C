@@ -6,6 +6,7 @@ import { addToCart } from "@/app/actions";
 import { formatInr } from "@/lib/storefront-data";
 import { getProductBySlug } from "@/lib/catalog";
 import { getProductReviews } from "@/lib/reviews";
+import { getAbsoluteUrl, stringifyJsonLd } from "@/lib/seo";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -18,9 +19,35 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     return { title: "Product not found" };
   }
 
+  const url = getAbsoluteUrl(`/product/${product.slug}`);
+  const description = `${product.seoBlurb} Order from C "N" C Cakes "N" Chocolates for delivery in Mulund East, Mumbai.`;
+
   return {
     title: product.name,
-    description: product.seoBlurb
+    description,
+    keywords: [
+      `${product.name} Mulund`,
+      `${product.flavor} cake Mulund`,
+      `${product.category} delivery Mumbai`,
+      "cakes in Mulund",
+      "cakes and chocolates in Mulund"
+    ],
+    alternates: {
+      canonical: `/product/${product.slug}`
+    },
+    openGraph: {
+      title: product.name,
+      description,
+      type: "website",
+      url,
+      images: [{ url: product.image, alt: product.name }]
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description,
+      images: [product.image]
+    }
   };
 }
 
@@ -33,9 +60,66 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   const reviews = await getProductReviews(product.id);
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    image: [product.image, ...product.gallery],
+    description: product.detailBlurb,
+    sku: product.id,
+    category: product.category,
+    brand: {
+      "@type": "Brand",
+      name: 'C "N" C Cakes "N" Chocolates'
+    },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "INR",
+      price: product.priceInr,
+      availability: "https://schema.org/InStock",
+      url: getAbsoluteUrl(`/product/${product.slug}`),
+      seller: {
+        "@type": "Organization",
+        name: 'C "N" C Cakes "N" Chocolates'
+      }
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: product.rating,
+      reviewCount: product.reviews
+    }
+  };
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: getAbsoluteUrl("/")
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Shop",
+        item: getAbsoluteUrl("/shop")
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.name,
+        item: getAbsoluteUrl(`/product/${product.slug}`)
+      }
+    ]
+  };
 
   return (
     <main className="section">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: stringifyJsonLd([productSchema, breadcrumbSchema]) }}
+      />
       <div className="container product-layout">
         <section className="panel">
           <div className="product-breadcrumbs">

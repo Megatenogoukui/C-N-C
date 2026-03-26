@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
+import { buildPageMetadata, getAbsoluteUrl, stringifyJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "FAQ",
-  description: "Delivery, customization, freshness, serviceability, and order support answers."
+  ...buildPageMetadata({
+    title: "Cake Delivery FAQ",
+    description:
+      "Answers about cake delivery in Mulund, custom cake lead times, freshness, payment options, and support for C N C customers.",
+    path: "/faq",
+    keywords: ["cake delivery FAQ Mulund", "custom cake questions Mumbai", "Mulund cake shop support"]
+  })
 };
 
 const faqs = [
@@ -15,8 +21,26 @@ const faqs = [
 ];
 
 export default function FaqPage() {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: answer
+      }
+    })),
+    url: getAbsoluteUrl("/faq")
+  };
+
   return (
     <main className="section section-soft">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: stringifyJsonLd(faqSchema) }}
+      />
       <div className="container">
         <span className="eyebrow">FAQ</span>
         <h1 style={{ fontSize: 64 }}>Support before support tickets.</h1>
