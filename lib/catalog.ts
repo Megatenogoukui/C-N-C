@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { logExpectedFallback, isBuildProcess } from "@/lib/runtime";
 import { products as fallbackProducts } from "@/lib/storefront-data";
 import { withTimeout } from "@/lib/with-timeout";
 
@@ -92,6 +93,21 @@ export function mapProduct(product: Awaited<ReturnType<typeof db.product.findFir
 }
 
 export async function getProducts(filters?: { occasion?: string; flavor?: string; eggless?: boolean }) {
+  if (isBuildProcess()) {
+    return fallbackProducts.filter((product) => {
+      if (filters?.occasion && product.occasion !== filters.occasion && product.category !== filters.occasion) {
+        return false;
+      }
+      if (filters?.flavor && product.flavor !== filters.flavor) {
+        return false;
+      }
+      if (filters?.eggless && !product.eggless) {
+        return false;
+      }
+      return true;
+    });
+  }
+
   try {
     const products = await withTimeout(
       db.product.findMany({
@@ -112,7 +128,7 @@ export async function getProducts(filters?: { occasion?: string; flavor?: string
     );
     return products.map(mapProduct);
   } catch (error) {
-    console.error("catalog lookup failed", error);
+    logExpectedFallback("catalog lookup", error);
     return fallbackProducts.filter((product) => {
       if (filters?.occasion && product.occasion !== filters.occasion && product.category !== filters.occasion) {
         return false;
@@ -129,16 +145,25 @@ export async function getProducts(filters?: { occasion?: string; flavor?: string
 }
 
 export async function getProductBySlug(slug: string) {
+  if (isBuildProcess()) {
+    return fallbackProducts.find((product) => product.slug === slug) || null;
+  }
+
   try {
     const product = await withTimeout(db.product.findUnique({ where: { slug } }), 1200, "product lookup");
     return product ? mapProduct(product) : null;
   } catch (error) {
-    console.error("product lookup failed", error);
+    logExpectedFallback("product lookup", error);
     return fallbackProducts.find((product) => product.slug === slug) || null;
   }
 }
 
 export async function getProductBySlugs(slugs: string[]) {
+  if (isBuildProcess()) {
+    const map = new Map(fallbackProducts.map((product) => [product.slug, product]));
+    return slugs.map((slug) => map.get(slug)).filter(Boolean) as StoreProduct[];
+  }
+
   try {
     const products = await withTimeout(
       db.product.findMany({
@@ -150,7 +175,7 @@ export async function getProductBySlugs(slugs: string[]) {
     const map = new Map(products.map((product) => [product.slug, mapProduct(product)]));
     return slugs.map((slug) => map.get(slug)).filter(Boolean) as StoreProduct[];
   } catch (error) {
-    console.error("product batch lookup failed", error);
+    logExpectedFallback("product batch lookup", error);
     const map = new Map(fallbackProducts.map((product) => [product.slug, product]));
     return slugs.map((slug) => map.get(slug)).filter(Boolean) as StoreProduct[];
   }

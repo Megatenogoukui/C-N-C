@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { upsertContentEntryAction } from "@/lib/admin";
+import { logExpectedFallback } from "@/lib/runtime";
 
 export const metadata: Metadata = {
   title: "Admin Story",
@@ -17,7 +18,7 @@ export default async function AdminStoryPage() {
       orderBy: { sortOrder: "asc" }
     });
   } catch (error) {
-    console.error("admin story lookup failed", error);
+    logExpectedFallback("admin story lookup", error);
     dataWarning = "Story entries could not be loaded right now. You can still submit new content.";
   }
 

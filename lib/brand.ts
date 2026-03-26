@@ -1,7 +1,15 @@
 import { db } from "@/lib/db";
+import { logExpectedFallback, isBuildProcess } from "@/lib/runtime";
 import { withTimeout } from "@/lib/with-timeout";
 
 export async function getBrandAssets() {
+  if (isBuildProcess()) {
+    return {
+      logo: null,
+      poster: null
+    };
+  }
+
   try {
     const assets = await withTimeout(
       db.brandAsset.findMany({ orderBy: { createdAt: "desc" } }),
@@ -13,7 +21,7 @@ export async function getBrandAssets() {
       poster: assets.find((asset) => asset.type === "POSTER")
     };
   } catch (error) {
-    console.error("brand assets lookup failed", error);
+    logExpectedFallback("brand assets lookup", error);
     return {
       logo: null,
       poster: null

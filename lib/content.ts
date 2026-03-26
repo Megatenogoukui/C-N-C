@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { logExpectedFallback, isBuildProcess } from "@/lib/runtime";
 import { withTimeout } from "@/lib/with-timeout";
 
 const fallbackStoryEntries = [
@@ -60,6 +61,10 @@ const fallbackJournalEntries = [
 ];
 
 export async function getStoryEntries() {
+  if (isBuildProcess()) {
+    return fallbackStoryEntries;
+  }
+
   try {
     const entries = await withTimeout(
       db.contentEntry.findMany({
@@ -74,13 +79,17 @@ export async function getStoryEntries() {
       return entries;
     }
   } catch (error) {
-    console.error("story content lookup failed", error);
+    logExpectedFallback("story content lookup", error);
   }
 
   return fallbackStoryEntries;
 }
 
 export async function getJournalEntries() {
+  if (isBuildProcess()) {
+    return fallbackJournalEntries;
+  }
+
   try {
     const entries = await withTimeout(
       db.contentEntry.findMany({
@@ -95,7 +104,7 @@ export async function getJournalEntries() {
       return entries;
     }
   } catch (error) {
-    console.error("journal content lookup failed", error);
+    logExpectedFallback("journal content lookup", error);
   }
 
   return fallbackJournalEntries;

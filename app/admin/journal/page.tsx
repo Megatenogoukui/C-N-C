@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { upsertContentEntryAction } from "@/lib/admin";
+import { logExpectedFallback } from "@/lib/runtime";
 
 export const metadata: Metadata = {
   title: "Admin Journal",
@@ -17,7 +18,7 @@ export default async function AdminJournalPage() {
       orderBy: { sortOrder: "asc" }
     });
   } catch (error) {
-    console.error("admin journal lookup failed", error);
+    logExpectedFallback("admin journal lookup", error);
     dataWarning = "Journal entries could not be loaded right now. You can still submit new content.";
   }
 
