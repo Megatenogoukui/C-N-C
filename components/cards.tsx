@@ -14,7 +14,7 @@ export function ProductCard({
   return (
     <article className="product-card">
       <div className="product-image">
-        <Image src={product.image} alt={product.name} fill sizes="(max-width: 720px) 100vw, 33vw" />
+        <Image src={product.image} alt={product.name} fill sizes="(max-width: 720px) 100vw, (max-width: 1080px) 50vw, 26vw" />
       </div>
       <div className="product-card-body">
         <span className="badge">{product.badge}</span>
@@ -56,7 +56,7 @@ export function CollectionCard({
 }) {
   return (
     <Link href={`/shop?occasion=${encodeURIComponent(name)}`} className="collection-card">
-      <Image src={image} alt={name} fill sizes="(max-width: 1080px) 100vw, 20vw" />
+      <Image src={image} alt={name} fill sizes="(max-width: 720px) 100vw, (max-width: 1080px) 50vw, 22vw" />
       <div className="collection-card-content">
         <h3 style={{ fontSize: 24 }}>{name}</h3>
         <p style={{ marginTop: 6, fontSize: 14 }}>{intro}</p>

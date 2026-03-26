@@ -44,21 +44,21 @@ export default async function AboutPage() {
               ))}
             </div>
           </div>
-          <div className="image-composition">
-            <div className="image-composition-main">
-              <Image src={images[0]} alt="Chocolate cake" fill sizes="(max-width: 1080px) 100vw, 38vw" />
+            <div className="image-composition">
+              <div className="image-composition-main">
+              <Image src={images[0]} alt="Chocolate cake" fill sizes="(max-width: 720px) 100vw, (max-width: 1080px) 50vw, 38vw" />
+              </div>
+              <div className="image-composition-side">
+                {images.slice(1, 3).map((src) => (
+                  <div className="image-composition-card" key={src}>
+                  <Image src={src} alt="" fill sizes="(max-width: 720px) 50vw, (max-width: 1080px) 24vw, 18vw" />
+                  </div>
+                ))}
+              </div>
+              <div className="image-composition-wide">
+              <Image src={images[3]} alt="" fill sizes="(max-width: 720px) 100vw, (max-width: 1080px) 66vw, 58vw" />
+              </div>
             </div>
-            <div className="image-composition-side">
-              {images.slice(1, 3).map((src) => (
-                <div className="image-composition-card" key={src}>
-                  <Image src={src} alt="" fill sizes="(max-width: 1080px) 100vw, 18vw" />
-                </div>
-              ))}
-            </div>
-            <div className="image-composition-wide">
-              <Image src={images[3]} alt="" fill sizes="(max-width: 1080px) 100vw, 58vw" />
-            </div>
-          </div>
         </div>
       </div>
     </main>

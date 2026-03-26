@@ -9,6 +9,7 @@ import {
 } from "@/components/sections";
 import { getProducts } from "@/lib/catalog";
 import { buildPageMetadata, getAbsoluteUrl, getLocalBusinessSchema, getSiteOrigin, stringifyJsonLd } from "@/lib/seo";
+import Link from "next/link";
 
 export async function generateMetadata() {
   const origin = await getSiteOrigin();
@@ -53,7 +54,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: stringifyJsonLd([localBusinessSchema, webPageSchema]) }}
       />
       <HomeHero />
-      <section className="section">
+      <section className="section deferred-section">
         <div className="container">
           <div className="content-split" style={{ alignItems: "start" }}>
             <div className="content-stack">
@@ -83,6 +84,30 @@ export default async function HomePage() {
                 </p>
               </article>
             </div>
+          </div>
+        </div>
+      </section>
+      <section className="section section-soft deferred-section">
+        <div className="container">
+          <span className="eyebrow">Search Hubs</span>
+          <h2>Local pages built for the exact searches customers use.</h2>
+          <div className="info-grid" style={{ marginTop: 24 }}>
+            {[
+              ["/cakes-in-mulund", "Cakes in Mulund", "A local commerce page for general cake-buying intent."],
+              ["/birthday-cakes-in-mulund", "Birthday Cakes in Mulund", "Built for birthday-specific buying and delivery intent."],
+              ["/chocolates-in-mulund", "Chocolates in Mulund", "Focused on gifting, cakes-and-chocolates demand, and mixed orders."],
+              ["/custom-cakes-in-mulund", "Custom Cakes in Mulund", "A stronger landing page for bespoke and theme-led cake requests."]
+            ].map(([href, title, copy]) => (
+              <article className="info-card" key={href}>
+                <h3 style={{ fontSize: 24 }}>{title}</h3>
+                <p style={{ marginTop: 10 }}>{copy}</p>
+                <p style={{ marginTop: 16 }}>
+                  <Link className="button-small" href={href}>
+                    Explore page
+                  </Link>
+                </p>
+              </article>
+            ))}
           </div>
         </div>
       </section>

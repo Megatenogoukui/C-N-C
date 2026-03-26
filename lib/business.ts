@@ -2,7 +2,7 @@ export const businessConfig = {
   city: "Mulund East, Mumbai",
   supportPhone: process.env.NEXT_PUBLIC_SUPPORT_PHONE || "919920554660",
   supportInstagram: process.env.NEXT_PUBLIC_INSTAGRAM_HANDLE || "sunitu_kandar",
-  supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "hello@cnccakes.example",
+  supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "hello@cnccakes.in",
   freeDeliveryThresholdInr: 4000,
   flatDeliveryFeeInr: 180,
   sameDayEnabled: false,

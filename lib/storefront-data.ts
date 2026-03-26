@@ -281,17 +281,17 @@ export const testimonials: Testimonial[] = [
     quote:
       "The Lavender Berry cake was the highlight of our anniversary. It felt editorial, not generic.",
     name: "Ananya K.",
-    area: "Golf Course Road"
+    area: "Mulund East"
   },
   {
     quote: "Packaging was as premium as the taste. This is now our go-to for corporate gifting.",
     name: "Vikram S.",
-    area: "Chanakyapuri"
+    area: "Mulund West"
   },
   {
     quote: "The eggless chocolate range actually tastes luxurious. That is rare.",
     name: "Priya M.",
-    area: "Vasant Vihar"
+    area: "Bhandup"
   }
 ];
 

@@ -180,7 +180,7 @@ export default async function CustomCakesPage({ searchParams }: CustomPageProps)
                 "https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?auto=format&fit=crop&w=1200&q=80"
               ].map((src) => (
                 <div className="image-strip-card" key={src}>
-                  <Image src={src} alt="" fill sizes="(max-width: 1080px) 100vw, 18vw" />
+                  <Image src={src} alt="" fill sizes="(max-width: 720px) 100vw, (max-width: 1080px) 30vw, 18vw" />
                 </div>
               ))}
             </div>

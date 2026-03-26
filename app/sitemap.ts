@@ -13,7 +13,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     aboutUrl,
     faqUrl,
     blogUrl,
-    trackUrl
+    trackUrl,
+    contactUrl,
+    cakesInMulundUrl,
+    birthdayCakesInMulundUrl,
+    chocolatesInMulundUrl,
+    customCakesInMulundUrl,
+    deliveryPolicyUrl,
+    privacyPolicyUrl,
+    termsUrl
   ] = await Promise.all([
     getAbsoluteUrl("/"),
     getAbsoluteUrl("/shop"),
@@ -21,7 +29,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getAbsoluteUrl("/about"),
     getAbsoluteUrl("/faq"),
     getAbsoluteUrl("/blog"),
-    getAbsoluteUrl("/track-order")
+    getAbsoluteUrl("/track-order"),
+    getAbsoluteUrl("/contact"),
+    getAbsoluteUrl("/cakes-in-mulund"),
+    getAbsoluteUrl("/birthday-cakes-in-mulund"),
+    getAbsoluteUrl("/chocolates-in-mulund"),
+    getAbsoluteUrl("/custom-cakes-in-mulund"),
+    getAbsoluteUrl("/delivery-policy"),
+    getAbsoluteUrl("/privacy-policy"),
+    getAbsoluteUrl("/terms")
   ]);
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -31,7 +47,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: aboutUrl, lastModified: now, changeFrequency: "monthly", priority: 0.75 },
     { url: faqUrl, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: blogUrl, lastModified: now, changeFrequency: "weekly", priority: 0.65 },
-    { url: trackUrl, lastModified: now, changeFrequency: "weekly", priority: 0.6 }
+    { url: trackUrl, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: contactUrl, lastModified: now, changeFrequency: "monthly", priority: 0.72 },
+    { url: cakesInMulundUrl, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: birthdayCakesInMulundUrl, lastModified: now, changeFrequency: "weekly", priority: 0.88 },
+    { url: chocolatesInMulundUrl, lastModified: now, changeFrequency: "weekly", priority: 0.85 },
+    { url: customCakesInMulundUrl, lastModified: now, changeFrequency: "weekly", priority: 0.89 },
+    { url: deliveryPolicyUrl, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
+    { url: privacyPolicyUrl, lastModified: now, changeFrequency: "monthly", priority: 0.35 },
+    { url: termsUrl, lastModified: now, changeFrequency: "monthly", priority: 0.35 }
   ];
 
   const productUrls = await Promise.all(products.map((product) => getAbsoluteUrl(`/product/${product.slug}`)));

@@ -9,6 +9,7 @@ import { MenuDrawer } from "@/components/menu-drawer";
 const navItems = [
   { href: "/shop", label: "Shop" },
   { href: "/custom-cakes", label: "Custom Cakes" },
+  { href: "/cakes-in-mulund", label: "Cakes in Mulund" },
   { href: "/about", label: "Our Story" },
   { href: "/blog", label: "Journal" }
 ];
@@ -118,6 +119,9 @@ export async function SiteChrome({
             <p>
               <Link href="/shop?occasion=Chocolate">Chocolate</Link>
             </p>
+            <p>
+              <Link href="/cakes-in-mulund">Cakes in Mulund</Link>
+            </p>
           </div>
           <div>
             <h4 style={{ fontSize: 18 }}>Boutique</h4>
@@ -133,13 +137,24 @@ export async function SiteChrome({
             <p>
               <Link href="/track-order">Track Order</Link>
             </p>
+            <p>
+              <Link href="/contact">Contact</Link>
+            </p>
           </div>
           <div>
             <h4 style={{ fontSize: 18 }}>Support</h4>
-            <p style={{ marginTop: 14 }}>WhatsApp concierge</p>
-            <p>COD and prepaid checkout</p>
-            <p>Single-city managed delivery</p>
-            <p>SEO-ready editorial content</p>
+            <p style={{ marginTop: 14 }}>
+              <Link href="/delivery-policy">Delivery Policy</Link>
+            </p>
+            <p>
+              <Link href="/privacy-policy">Privacy Policy</Link>
+            </p>
+            <p>
+              <Link href="/terms">Terms</Link>
+            </p>
+            <p>
+              <Link href={getWhatsAppUrl("Hello C N C, I need help with an order.")}>WhatsApp concierge</Link>
+            </p>
           </div>
         </div>
         <div className="container footer-note">

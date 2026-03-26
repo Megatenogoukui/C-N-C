@@ -23,6 +23,9 @@ export default async function BlogPage() {
       <div className="container">
         <span className="eyebrow">Journal</span>
         <h1 style={{ fontSize: 64 }}>SEO content that still fits the brand.</h1>
+        <p className="lead" style={{ marginTop: 18, maxWidth: 760 }}>
+          These articles support commercial search intent around cakes, chocolates, gifting, birthdays, and custom orders in Mulund while still pushing readers toward real buying paths.
+        </p>
         <div className="blog-grid" style={{ marginTop: 32 }}>
           {posts.map((post) => (
             <article className="info-card" key={post.id}>

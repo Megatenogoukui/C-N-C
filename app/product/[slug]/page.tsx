@@ -128,12 +128,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <span>{product.category}</span>
           </div>
           <div className="gallery-main">
-            <Image src={product.image} alt={product.name} fill sizes="(max-width:1080px) 100vw, 50vw" />
+            <Image src={product.image} alt={product.name} fill sizes="(max-width: 720px) 100vw, (max-width: 1080px) 56vw, 50vw" />
           </div>
           <div className="gallery-thumb-row">
             {product.gallery.map((src) => (
               <div className="gallery-thumb" key={src}>
-                <Image src={src} alt="" fill sizes="(max-width: 720px) 100vw, 16vw" />
+                <Image src={src} alt="" fill sizes="(max-width: 720px) 25vw, (max-width: 1080px) 18vw, 16vw" />
               </div>
             ))}
           </div>
@@ -199,6 +199,27 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
           </div>
 
+          <div className="info-grid" style={{ marginTop: 24 }}>
+            <article className="info-card">
+              <h3 className="compact-card-title">Why this works in Mulund</h3>
+              <p style={{ marginTop: 8 }}>
+                This product page is structured for local cake buyers who need fast clarity on flavor, finish, timing, and delivery support without switching to a separate chat thread.
+              </p>
+            </article>
+            <article className="info-card">
+              <h3 className="compact-card-title">When to choose custom instead</h3>
+              <p style={{ marginTop: 8 }}>
+                If the order needs a theme, toppers, references, unusual servings, or a more sculpted finish, move to the custom cakes flow rather than forcing a standard product into a bespoke brief.
+              </p>
+            </article>
+            <article className="info-card">
+              <h3 className="compact-card-title">Local trust signals</h3>
+              <p style={{ marginTop: 8 }}>
+                Customers can track orders after checkout, use WhatsApp for support, and review delivered products from the account area, which makes the storefront more accountable than a catalogue-only bakery page.
+              </p>
+            </article>
+          </div>
+
           <form action={addToCart} style={{ display: "grid", gap: 18, marginTop: 28 }}>
             <input type="hidden" name="slug" value={product.slug} />
             <input type="hidden" name="redirectTo" value="/cart" />
@@ -260,6 +281,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 No customer reviews yet. Delivered orders will be able to rate this product from the account orders page.
               </div>
             )}
+          </div>
+
+          <div className="service-strip" style={{ marginTop: 26 }}>
+            <div>
+              <strong>Explore related search paths</strong>
+              <p>
+                <Link href="/cakes-in-mulund">Cakes in Mulund</Link> • <Link href="/birthday-cakes-in-mulund">Birthday cakes in Mulund</Link> • <Link href="/chocolates-in-mulund">Chocolates in Mulund</Link>
+              </p>
+            </div>
+            <div>
+              <strong>Need delivery or support info?</strong>
+              <p>
+                <Link href="/delivery-policy">Delivery policy</Link> • <Link href="/contact">Contact C N C</Link> • <Link href="/track-order">Track order</Link>
+              </p>
+            </div>
           </div>
         </section>
       </div>

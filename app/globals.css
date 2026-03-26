@@ -57,6 +57,11 @@ img {
   min-height: 100vh;
 }
 
+.deferred-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 900px;
+}
+
 .container {
   width: var(--container);
   margin: 0 auto;

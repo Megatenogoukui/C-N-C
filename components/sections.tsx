@@ -86,7 +86,7 @@ export function StorySection() {
   ];
 
   return (
-    <section className="section section-soft">
+    <section className="section section-soft deferred-section">
       <div className="container story-split">
         <div className="story-visuals">
           <div className="story-visual-primary">
@@ -94,7 +94,7 @@ export function StorySection() {
               src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80"
               alt="Fresh dessert cups with strawberries"
               fill
-              sizes="(max-width: 1080px) 100vw, 34vw"
+              sizes="(max-width: 720px) 100vw, (max-width: 1080px) 48vw, 34vw"
             />
           </div>
           <div className="story-visual-stack">
@@ -109,7 +109,7 @@ export function StorySection() {
               }
             ].map((item) => (
               <div className="story-visual-secondary" key={item.src}>
-                <Image src={item.src} alt={item.alt} fill sizes="(max-width: 1080px) 100vw, 22vw" />
+                <Image src={item.src} alt={item.alt} fill sizes="(max-width: 720px) 100vw, (max-width: 1080px) 48vw, 22vw" />
               </div>
             ))}
           </div>
@@ -144,7 +144,7 @@ export function StorySection() {
 
 export function CollectionSection() {
   return (
-    <section className="section">
+    <section className="section deferred-section">
       <div className="container">
         <span className="eyebrow">Categories</span>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 18, alignItems: "flex-end", marginBottom: 8 }}>
@@ -170,7 +170,7 @@ export function CollectionSection() {
 
 export function BestsellerSection({ products }: { products: StoreProduct[] }) {
   return (
-    <section className="section section-soft">
+    <section className="section section-soft deferred-section">
       <div className="container">
         <div style={{ display: "flex", justifyContent: "space-between", gap: 18, alignItems: "flex-end", marginBottom: 18 }}>
           <div>
@@ -196,7 +196,7 @@ export function BestsellerSection({ products }: { products: StoreProduct[] }) {
 
 export function CustomCtaSection() {
   return (
-    <section className="section">
+    <section className="section deferred-section">
       <div className="container">
         <div className="cta-panel grain">
           <div className="panel-image">
@@ -204,7 +204,7 @@ export function CustomCtaSection() {
               src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=1800&q=80"
               alt="Custom cake workshop"
               fill
-              sizes="100vw"
+              sizes="(max-width: 720px) 100vw, (max-width: 1080px) 92vw, 72vw"
             />
           </div>
           <div className="cta-panel-content">
@@ -237,7 +237,7 @@ export function CustomCtaSection() {
 
 export function ReviewsSection() {
   return (
-    <section className="section">
+    <section className="section deferred-section">
       <div className="container">
         <div style={{ textAlign: "center", marginBottom: 22, maxWidth: 620, marginInline: "auto" }}>
           <span className="eyebrow">Customer Love</span>
@@ -269,7 +269,7 @@ export function JourneySection() {
   ];
 
   return (
-    <section className="section section-soft">
+    <section className="section section-soft deferred-section">
       <div className="container">
         <div style={{ textAlign: "center", marginBottom: 22, maxWidth: 640, marginInline: "auto" }}>
           <span className="eyebrow">Order Flow</span>
