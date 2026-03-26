@@ -7,11 +7,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const origin = await getSiteOrigin();
 
   return buildPageMetadata({
-    title: "About Our Mulund Bakery",
+    title: "About Our Mumbai Bakery",
     description:
-      'Learn how C "N" C built a homemade cakes and chocolates brand for Mulund East, Mumbai with premium celebration cakes, brownies, and custom orders.',
+      'Learn how C "N" C built a homemade cakes and chocolates brand for Mumbai with premium celebration cakes, brownies, custom orders, and Porter-supported delivery.',
     path: "/about",
-    keywords: ["Mulund bakery story", "cakes n chocolates Mulund East", "homemade cake shop Mumbai"],
+    keywords: ["Mumbai bakery story", "cakes n chocolates Mumbai", "homemade cake shop Mumbai"],
     origin
   });
 }
@@ -33,7 +33,7 @@ export default async function AboutPage() {
         <div className="content-split" style={{ marginTop: 32 }}>
           <div className="content-stack">
             <p className="lead">
-              C &quot;N&quot; C is positioned as a warm, homemade treats brand with room for serious commerce depth. The experience avoids marketplace clutter and focuses on clear ordering, strong trust, and a memorable bakery identity for Mulund East, Mumbai.
+              C &quot;N&quot; C is positioned as a warm, homemade treats brand with room for serious commerce depth. The experience avoids marketplace clutter and focuses on clear ordering, strong trust, and a memorable bakery identity for Mumbai, with Porter used to support delivery operations.
             </p>
             <div style={{ display: "grid", gap: 18, marginTop: 28 }}>
               {stories.map((story) => (

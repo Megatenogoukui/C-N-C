@@ -20,17 +20,17 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   }
 
   const url = await getAbsoluteUrl(`/product/${product.slug}`);
-  const description = `${product.seoBlurb} Order from C "N" C Cakes "N" Chocolates for delivery in Mulund East, Mumbai.`;
+  const description = `${product.seoBlurb} Order from C "N" C Cakes "N" Chocolates for delivery across Mumbai with Porter-supported fulfillment.`;
 
   return {
     title: product.name,
     description,
     keywords: [
-      `${product.name} Mulund`,
-      `${product.flavor} cake Mulund`,
+      `${product.name} Mumbai`,
+      `${product.flavor} cake Mumbai`,
       `${product.category} delivery Mumbai`,
-      "cakes in Mulund",
-      "cakes and chocolates in Mulund"
+      "cakes in Mumbai",
+      "cakes and chocolates in Mumbai"
     ],
     alternates: {
       canonical: `/product/${product.slug}`
@@ -201,9 +201,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           <div className="info-grid" style={{ marginTop: 24 }}>
             <article className="info-card">
-              <h3 className="compact-card-title">Why this works in Mulund</h3>
+              <h3 className="compact-card-title">Why this works in Mumbai</h3>
               <p style={{ marginTop: 8 }}>
-                This product page is structured for local cake buyers who need fast clarity on flavor, finish, timing, and delivery support without switching to a separate chat thread.
+                This product page is structured for Mumbai cake buyers who need fast clarity on flavor, finish, timing, and delivery support without switching to a separate chat thread.
               </p>
             </article>
             <article className="info-card">
@@ -287,7 +287,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div>
               <strong>Explore related search paths</strong>
               <p>
-                <Link href="/cakes-in-mulund">Cakes in Mulund</Link> • <Link href="/birthday-cakes-in-mulund">Birthday cakes in Mulund</Link> • <Link href="/chocolates-in-mulund">Chocolates in Mulund</Link>
+                <Link href="/cakes-in-mumbai">Cakes in Mumbai</Link> • <Link href="/birthday-cakes-in-mumbai">Birthday cakes in Mumbai</Link> • <Link href="/chocolates-in-mumbai">Chocolates in Mumbai</Link>
               </p>
             </div>
             <div>

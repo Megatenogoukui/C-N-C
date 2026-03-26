@@ -9,7 +9,7 @@ import { MenuDrawer } from "@/components/menu-drawer";
 const navItems = [
   { href: "/shop", label: "Shop" },
   { href: "/custom-cakes", label: "Custom Cakes" },
-  { href: "/cakes-in-mulund", label: "Cakes in Mulund" },
+  { href: "/cakes-in-mumbai", label: "Cakes in Mumbai" },
   { href: "/about", label: "Our Story" },
   { href: "/blog", label: "Journal" }
 ];
@@ -120,7 +120,7 @@ export async function SiteChrome({
               <Link href="/shop?occasion=Chocolate">Chocolate</Link>
             </p>
             <p>
-              <Link href="/cakes-in-mulund">Cakes in Mulund</Link>
+              <Link href="/cakes-in-mumbai">Cakes in Mumbai</Link>
             </p>
           </div>
           <div>
@@ -146,6 +146,7 @@ export async function SiteChrome({
             <p style={{ marginTop: 14 }}>
               <Link href="/delivery-policy">Delivery Policy</Link>
             </p>
+            <p>Mumbai delivery via {businessConfig.deliveryPartner}</p>
             <p>
               <Link href="/privacy-policy">Privacy Policy</Link>
             </p>

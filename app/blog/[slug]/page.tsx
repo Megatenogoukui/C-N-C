@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
     title: post.title,
     description: post.excerpt || post.body,
     path: `/blog/${post.slug}`,
-    keywords: ["cakes in Mulund", "Mulund bakery", "cakes and chocolates in Mulund"],
+    keywords: ["cakes in Mumbai", "Mumbai bakery", "cakes and chocolates in Mumbai"],
     origin
   });
 }

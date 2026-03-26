@@ -13,11 +13,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const origin = await getSiteOrigin();
 
   return buildPageMetadata({
-    title: "Custom Cakes in Mulund",
+    title: "Custom Cakes in Mumbai",
     description:
-      "Submit a bespoke cake inquiry for birthdays, weddings, milestones, and theme cakes in Mulund East with event details, budget, servings, and reference ideas.",
+      "Submit a bespoke cake inquiry for birthdays, weddings, milestones, and theme cakes in Mumbai with event details, budget, servings, and reference ideas.",
     path: "/custom-cakes",
-    keywords: ["custom cakes Mulund", "theme cakes Mulund East", "wedding cakes Mumbai"],
+    keywords: ["custom cakes Mumbai", "theme cakes Mumbai", "wedding cakes Mumbai"],
     origin
   });
 }

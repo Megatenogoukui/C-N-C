@@ -50,16 +50,16 @@ export async function getAbsoluteUrl(path = "/") {
 
 export function getSharedKeywords() {
   return [
-    "cakes in Mulund",
-    "cakes in Mulund East",
+    "cakes in Mumbai",
+    "cakes and chocolates in Mumbai",
     "cakes n chocolates",
-    "cakes and chocolates in Mulund",
-    "chocolates in Mulund",
-    "birthday cakes in Mulund",
-    "custom cakes in Mulund",
-    "brownies in Mulund",
-    "eggless cakes in Mulund",
-    "cake delivery in Mulund"
+    "chocolates in Mumbai",
+    "birthday cakes in Mumbai",
+    "custom cakes in Mumbai",
+    "brownies in Mumbai",
+    "eggless cakes in Mumbai",
+    "cake delivery in Mumbai",
+    "Porter cake delivery Mumbai"
   ];
 }
 
@@ -120,16 +120,12 @@ export function getLocalBusinessSchema() {
     areaServed: [
       {
         "@type": "City",
-        name: "Mulund East"
-      },
-      {
-        "@type": "City",
         name: "Mumbai"
       }
     ],
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Mulund East",
+      addressLocality: "Mumbai",
       addressRegion: "Maharashtra",
       postalCode: businessConfig.serviceablePincodes[0],
       addressCountry: "IN"

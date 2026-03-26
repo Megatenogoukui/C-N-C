@@ -15,9 +15,9 @@ export async function generateMetadata(): Promise<Metadata> {
     ...buildPageMetadata({
       title: 'C "N" C Cakes "N" Chocolates',
       description:
-        'Order cakes, brownies, cupcakes, and chocolates in Mulund East, Mumbai from C "N" C. Discover birthday cakes, custom cakes, and local cake delivery with a premium homemade bakery feel.',
+        'Order cakes, brownies, cupcakes, and chocolates across Mumbai from C "N" C. Discover birthday cakes, custom cakes, and city-wide delivery with a premium homemade bakery feel.',
       path: "/",
-      keywords: ["Mulund bakery", "Mulund East cake shop", "homemade cakes Mumbai"],
+      keywords: ["Mumbai cake delivery", "cakes in Mumbai", "homemade cakes Mumbai"],
       origin
     }),
     category: "food",

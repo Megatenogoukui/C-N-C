@@ -66,7 +66,7 @@ export const products: Product[] = [
     detailBlurb:
       "Aromatic, airy, and softly tart, finished with pressed petals and hand-placed berries.",
     seoBlurb:
-      'Homemade lavender berry cake in Mulund East, Mumbai with delivery slots and custom message options.',
+      "Homemade lavender berry cake in Mumbai with delivery slots, Porter support, and custom message options.",
     highlights: ["24-hour preorder", "Custom message included", "Editorial floral finish"],
     ingredients: [
       "Lavender sponge",
@@ -104,7 +104,7 @@ export const products: Product[] = [
     detailBlurb:
       "An intense cocoa-led profile softened by creamy layers and a glossy finish.",
     seoBlurb:
-      "Chocolate cake with Belgian couverture and local delivery in Mulund East, Mumbai.",
+      "Chocolate cake with Belgian couverture and Mumbai delivery support.",
     highlights: ["Fast mover", "Rich cocoa finish", "Ideal for birthdays and gifting"],
     ingredients: ["Belgian chocolate sponge", "Dark ganache", "Sea salt flakes", "Valrhona cocoa"],
     addOns: [
@@ -134,7 +134,7 @@ export const products: Product[] = [
     ],
     badge: "Signature",
     detailBlurb: "Softly perfumed, lightly textured, and plated to feel ceremonial.",
-    seoBlurb: "Rose pistachio cake for anniversary and gifting in Mulund East, Mumbai.",
+    seoBlurb: "Rose pistachio cake for anniversary and gifting across Mumbai.",
     highlights: ["Elegant floral profile", "Premium gifting favorite", "Highly photogenic"],
     ingredients: ["Vanilla sponge", "Rose milk soak", "Pistachio praline", "Fresh cream"],
     addOns: [
@@ -237,7 +237,7 @@ export const products: Product[] = [
     detailBlurb:
       "Designed to merge sentiment with polished premium execution.",
     seoBlurb:
-      "Photo cake delivery in Mulund East, Mumbai with premium edible print finish.",
+      "Photo cake delivery in Mumbai with premium edible print finish and Porter-backed fulfillment.",
     highlights: ["High-resolution edible print", "Ideal for milestone events", "WhatsApp support available"],
     ingredients: ["Vanilla sponge", "Photo sheet", "Fresh cream", "Fondant detailing"],
     addOns: [
@@ -281,17 +281,17 @@ export const testimonials: Testimonial[] = [
     quote:
       "The Lavender Berry cake was the highlight of our anniversary. It felt editorial, not generic.",
     name: "Ananya K.",
-    area: "Mulund East"
+    area: "Mumbai"
   },
   {
     quote: "Packaging was as premium as the taste. This is now our go-to for corporate gifting.",
     name: "Vikram S.",
-    area: "Mulund West"
+    area: "Mumbai"
   },
   {
     quote: "The eggless chocolate range actually tastes luxurious. That is rare.",
     name: "Priya M.",
-    area: "Bhandup"
+    area: "Mumbai"
   }
 ];
 

@@ -9,9 +9,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
     title: "Contact C N C",
     description:
-      "Contact C N C Cakes N Chocolates for cake orders, custom cake inquiries, delivery help, and WhatsApp support in Mulund East, Mumbai.",
+      "Contact C N C Cakes N Chocolates for cake orders, custom cake inquiries, delivery help, and WhatsApp support across Mumbai.",
     path: "/contact",
-    keywords: ["contact cake shop Mulund", "Mulund cake support", "WhatsApp cake order Mulund"],
+    keywords: ["contact cake shop Mumbai", "Mumbai cake support", "WhatsApp cake order Mumbai"],
     origin
   });
 }
@@ -25,7 +25,7 @@ export default function ContactPage() {
         <span className="eyebrow">Contact</span>
         <h1 style={{ fontSize: 60 }}>Need help before or after ordering?</h1>
         <p className="lead" style={{ marginTop: 18, maxWidth: 780 }}>
-          Use WhatsApp for the fastest response on cake selection, custom requests, delivery clarifications, and order support across Mulund East serviceable pincodes.
+          Use WhatsApp for the fastest response on cake selection, custom requests, delivery clarifications, and order support across Mumbai. Porter is used to help fulfill deliveries depending on the order and zone.
         </p>
         <div className="info-grid" style={{ marginTop: 30 }}>
           <article className="info-card">

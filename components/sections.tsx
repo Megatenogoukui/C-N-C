@@ -17,7 +17,7 @@ export function HomeHero() {
         />
       </div>
       <div className="container hero-content">
-        <span className="eyebrow">Homemade Treats • Mulund East, Mumbai</span>
+        <span className="eyebrow">Homemade Treats • Mumbai Delivery</span>
         <h1>
           Celebration cakes that feel <em>personal</em>, not mass produced.
         </h1>
@@ -33,7 +33,7 @@ export function HomeHero() {
           </Link>
         </div>
         <div className="hero-pill-row" style={{ marginTop: 24 }}>
-          {["Eggless options", "Tracked delivery", "WhatsApp concierge", "Custom celebration cakes"].map((item) => (
+          {["Eggless options", "Porter delivery support", "WhatsApp concierge", "Custom celebration cakes"].map((item) => (
             <span className="story-pill" key={item}>{item}</span>
           ))}
         </div>

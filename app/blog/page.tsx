@@ -9,9 +9,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
     title: "Cake Journal",
     description:
-      "Guides on birthday cakes in Mulund, custom cake planning, gifting ideas, and local bakery tips from C N C Cakes N Chocolates.",
+      "Guides on birthday cakes in Mumbai, custom cake planning, gifting ideas, and local bakery tips from C N C Cakes N Chocolates.",
     path: "/blog",
-    keywords: ["cake blog Mulund", "birthday cake guide Mumbai", "custom cake planning"],
+    keywords: ["cake blog Mumbai", "birthday cake guide Mumbai", "custom cake planning"],
     origin
   });
 }
@@ -24,7 +24,7 @@ export default async function BlogPage() {
         <span className="eyebrow">Journal</span>
         <h1 style={{ fontSize: 64 }}>SEO content that still fits the brand.</h1>
         <p className="lead" style={{ marginTop: 18, maxWidth: 760 }}>
-          These articles support commercial search intent around cakes, chocolates, gifting, birthdays, and custom orders in Mulund while still pushing readers toward real buying paths.
+          These articles support commercial search intent around cakes, chocolates, gifting, birthdays, and custom orders in Mumbai while still pushing readers toward real buying paths.
         </p>
         <div className="blog-grid" style={{ marginTop: 32 }}>
           {posts.map((post) => (

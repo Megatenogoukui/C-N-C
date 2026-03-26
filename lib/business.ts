@@ -1,5 +1,7 @@
 export const businessConfig = {
-  city: "Mulund East, Mumbai",
+  city: "Mumbai",
+  locality: "Mumbai",
+  deliveryPartner: "Porter",
   supportPhone: process.env.NEXT_PUBLIC_SUPPORT_PHONE || "919920554660",
   supportInstagram: process.env.NEXT_PUBLIC_INSTAGRAM_HANDLE || "sunitu_kandar",
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "hello@cnccakes.in",

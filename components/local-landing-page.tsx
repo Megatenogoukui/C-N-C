@@ -47,7 +47,7 @@ export function LocalLandingPage({ slug }: { slug: string }) {
         dangerouslySetInnerHTML={{ __html: stringifyJsonLd(faqSchema) }}
       />
       <div className="container">
-        <span className="eyebrow">Mulund Landing Page</span>
+        <span className="eyebrow">Mumbai Landing Page</span>
         <h1 style={{ fontSize: 62 }}>{page.heading}</h1>
         <p className="lead" style={{ marginTop: 18, maxWidth: 860 }}>
           {page.lead}

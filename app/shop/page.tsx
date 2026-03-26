@@ -16,11 +16,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const origin = await getSiteOrigin();
 
   return buildPageMetadata({
-    title: "Shop Cakes in Mulund",
+    title: "Shop Cakes in Mumbai",
     description:
-      'Browse birthday cakes, chocolate cakes, eggless cakes, brownies, and celebration favourites for Mulund East delivery from C "N" C Cakes "N" Chocolates.',
+      'Browse birthday cakes, chocolate cakes, eggless cakes, brownies, and celebration favourites for Mumbai delivery from C "N" C Cakes "N" Chocolates.',
     path: "/shop",
-    keywords: ["shop cakes in Mulund", "chocolate cake Mulund", "eggless cake Mulund East"],
+    keywords: ["shop cakes in Mumbai", "chocolate cake Mumbai", "eggless cake Mumbai"],
     origin
   });
 }

@@ -15,15 +15,15 @@ export async function generateMetadata() {
   const origin = await getSiteOrigin();
 
   return buildPageMetadata({
-    title: "Cakes in Mulund | Cakes N Chocolates",
+    title: "Cakes in Mumbai | Cakes N Chocolates",
     description:
-      'C "N" C is a Mulund East cakes and chocolates brand for birthday cakes, brownies, cupcakes, and custom celebration cakes with local delivery across Mumbai serviceable pincodes.',
+      'C "N" C is a Mumbai cakes and chocolates brand for birthday cakes, brownies, cupcakes, and custom celebration cakes with city-wide delivery and Porter-based fulfillment support.',
     path: "/",
     keywords: [
-      "cakes in Mulund East Mumbai",
-      "cakes and chocolates in Mulund",
-      "birthday cake delivery Mulund",
-      "homemade chocolates Mulund"
+      "cakes in Mumbai",
+      "cakes and chocolates in Mumbai",
+      "birthday cake delivery Mumbai",
+      "homemade chocolates Mumbai"
     ],
     origin
   });
@@ -36,13 +36,13 @@ export default async function HomePage() {
   const webPageSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "Cakes and chocolates in Mulund",
+    name: "Cakes and chocolates in Mumbai",
     url: pageUrl,
     description:
-      'C "N" C is a Mulund East cakes and chocolates brand for birthday cakes, brownies, cupcakes, and custom celebration cakes with local delivery across Mumbai serviceable pincodes.',
+      'C "N" C is a Mumbai cakes and chocolates brand for birthday cakes, brownies, cupcakes, and custom celebration cakes with city-wide delivery and Porter-based fulfillment support.',
     about: [
-      "Birthday cakes in Mulund",
-      "Custom cakes in Mulund East",
+      "Birthday cakes in Mumbai",
+      "Custom cakes in Mumbai",
       "Homemade chocolates in Mumbai"
     ]
   };
@@ -58,15 +58,15 @@ export default async function HomePage() {
         <div className="container">
           <div className="content-split" style={{ alignItems: "start" }}>
             <div className="content-stack">
-              <span className="eyebrow">Mulund Search Intent</span>
-              <h2>Cakes, chocolates, and custom celebration orders for Mulund East.</h2>
+              <span className="eyebrow">Mumbai Search Intent</span>
+              <h2>Cakes, chocolates, and custom celebration orders across Mumbai.</h2>
               <p className="lead" style={{ marginTop: 18 }}>
-                People searching for cakes in Mulund usually need one of three things fast: a reliable birthday cake, a thoughtful cakes-and-chocolates gift, or a custom cake that does not collapse into WhatsApp chaos. This storefront is built around those exact paths.
+                People searching for cakes in Mumbai usually need one of three things fast: a reliable birthday cake, a thoughtful cakes-and-chocolates gift, or a custom cake that does not collapse into WhatsApp chaos. This storefront is built around those exact paths, with Porter used for delivery support.
               </p>
             </div>
             <div className="info-grid">
               <article className="info-card">
-                <h3 style={{ fontSize: 24 }}>Birthday cakes in Mulund</h3>
+                <h3 style={{ fontSize: 24 }}>Birthday cakes in Mumbai</h3>
                 <p style={{ marginTop: 10 }}>
                   Signature catalog cakes handle the quick-order path with delivery-slot clarity, message-on-cake inputs, and tracked status after checkout.
                 </p>
@@ -74,11 +74,11 @@ export default async function HomePage() {
               <article className="info-card">
                 <h3 style={{ fontSize: 24 }}>Cakes and chocolates together</h3>
                 <p style={{ marginTop: 10 }}>
-                  Brownies, cupcakes, and chocolates sit alongside cakes so gifting orders feel complete instead of forcing customers into multiple vendors.
+                  Brownies, cupcakes, and chocolates sit alongside cakes so gifting orders feel complete instead of forcing customers into multiple vendors across the city.
                 </p>
               </article>
               <article className="info-card">
-                <h3 style={{ fontSize: 24 }}>Custom cakes in Mulund East</h3>
+                <h3 style={{ fontSize: 24 }}>Custom cakes in Mumbai</h3>
                 <p style={{ marginTop: 10 }}>
                   The bespoke brief captures theme, servings, budget, and event timing before the team follows up, which is stronger than a vague inquiry form.
                 </p>
@@ -93,10 +93,10 @@ export default async function HomePage() {
           <h2>Local pages built for the exact searches customers use.</h2>
           <div className="info-grid" style={{ marginTop: 24 }}>
             {[
-              ["/cakes-in-mulund", "Cakes in Mulund", "A local commerce page for general cake-buying intent."],
-              ["/birthday-cakes-in-mulund", "Birthday Cakes in Mulund", "Built for birthday-specific buying and delivery intent."],
-              ["/chocolates-in-mulund", "Chocolates in Mulund", "Focused on gifting, cakes-and-chocolates demand, and mixed orders."],
-              ["/custom-cakes-in-mulund", "Custom Cakes in Mulund", "A stronger landing page for bespoke and theme-led cake requests."]
+              ["/cakes-in-mumbai", "Cakes in Mumbai", "A city-wide commerce page for general cake-buying intent."],
+              ["/birthday-cakes-in-mumbai", "Birthday Cakes in Mumbai", "Built for birthday-specific buying and delivery intent."],
+              ["/chocolates-in-mumbai", "Chocolates in Mumbai", "Focused on gifting, cakes-and-chocolates demand, and mixed orders."],
+              ["/custom-cakes-in-mumbai", "Custom Cakes in Mumbai", "A stronger landing page for bespoke and theme-led cake requests."]
             ].map(([href, title, copy]) => (
               <article className="info-card" key={href}>
                 <h3 style={{ fontSize: 24 }}>{title}</h3>

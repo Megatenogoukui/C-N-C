@@ -7,9 +7,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
     title: "Cake Delivery FAQ",
     description:
-      "Answers about cake delivery in Mulund, custom cake lead times, freshness, payment options, and support for C N C customers.",
+      "Answers about cake delivery in Mumbai, custom cake lead times, freshness, payment options, and support for C N C customers.",
     path: "/faq",
-    keywords: ["cake delivery FAQ Mulund", "custom cake questions Mumbai", "Mulund cake shop support"],
+    keywords: ["cake delivery FAQ Mumbai", "custom cake questions Mumbai", "Mumbai cake shop support"],
     origin
   });
 }
@@ -18,7 +18,7 @@ const faqs = [
   ["How much notice do you need?", "Most catalog cakes work with 24-hour notice. Complex custom pieces need manual review."],
   ["Do you support COD?", "Yes. COD and online payments are both represented in the checkout flow."],
   ["Can I request eggless?", "Yes, but availability depends on product and lead time. The live rules can be added at the catalog layer later."],
-  ["Do you deliver outside Mulund / Mumbai?", "This launch shape is intentionally single-city first. Expand after operations are stable."],
+  ["Do you deliver across Mumbai?", "Yes. The storefront is positioned for Mumbai delivery, with Porter used to support fulfillment depending on the order, timing, and area."],
   ["How are custom requests priced?", "The custom flow captures budget, scale, and references. Final quote should be manual until pricing rules are mature."],
   ["Where does WhatsApp fit?", "Support, custom inquiries, and post-order help. The number and API templates are pending your inputs."]
 ];
