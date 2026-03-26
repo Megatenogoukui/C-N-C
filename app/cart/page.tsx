@@ -107,6 +107,12 @@ export default async function CartPage() {
                 Keep Shopping
               </Link>
             </div>
+            <div className="info-card" style={{ marginTop: 18 }}>
+              <strong>Before you checkout</strong>
+              <p style={{ marginTop: 8 }}>
+                You will confirm delivery date, slot, address, and payment mode on the next screen. For design-heavy requests, switch to the custom cake brief instead of forcing a catalog order.
+              </p>
+            </div>
           </aside>
         </div>
       </div>

@@ -11,6 +11,8 @@
     "start:local": "NEXTAUTH_URL=http://127.0.0.1:3000 next start --hostname 127.0.0.1 --port 3000",
     "lint": "next lint",
     "e2e:smoke": "node scripts/playwright-smoke.mjs",
+    "e2e:full": "node scripts/playwright-full.mjs",
+    "e2e:track": "node scripts/test-track-flow.mjs",
     "db:seed": "node scripts/seed.mjs"
   },
   "dependencies": {

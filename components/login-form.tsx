@@ -1,7 +1,7 @@
 "use client";
 
 import { getSession, signIn } from "next-auth/react";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 export function LoginForm({
   callbackUrl,
@@ -11,7 +11,12 @@ export function LoginForm({
   enableGoogle: boolean;
 }) {
   const [error, setError] = useState<string>("");
+  const [isHydrated, setIsHydrated] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -46,6 +51,7 @@ export function LoginForm({
   return (
     <>
       <form
+        method="post"
         onSubmit={onSubmit}
         style={{ display: "grid", gap: 16, marginTop: 24 }}
       >
@@ -58,8 +64,8 @@ export function LoginForm({
           <input className="input" name="password" type="password" placeholder="customer123" />
         </label>
         {error ? <div className="info-card" style={{ color: "#8f2d24" }}>{error}</div> : null}
-        <button className="button" disabled={isPending} type="submit">
-          {isPending ? "Signing in..." : "Login"}
+        <button className="button" disabled={!isHydrated || isPending} type="submit">
+          {!isHydrated ? "Preparing..." : isPending ? "Signing in..." : "Login"}
         </button>
       </form>
       {enableGoogle ? (

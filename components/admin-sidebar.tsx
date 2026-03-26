@@ -22,6 +22,9 @@ export function AdminSidebar() {
       <div className="admin-sidebar-card">
         <span className="eyebrow">Admin Console</span>
         <h2>Manage the storefront from one place.</h2>
+        <p style={{ marginTop: 10 }}>
+          Operations, content, custom requests, and order updates should all be reachable in two clicks or less.
+        </p>
       </div>
       <nav className="admin-sidebar-nav" aria-label="Admin">
         {adminLinks.map((link) => {
@@ -34,7 +37,7 @@ export function AdminSidebar() {
         })}
       </nav>
       <div className="admin-sidebar-card admin-sidebar-note">
-        <p>Customer-facing pages stay separate. Admin navigation only shows management tools.</p>
+        <p>Keep customer flows clean: update order status early, archive stale products, and respond to custom cake briefs before they go cold.</p>
       </div>
     </aside>
   );

@@ -18,8 +18,8 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
 
   return (
     <main className="section section-soft">
-      <div className="container" style={{ maxWidth: 560 }}>
-        <div className="panel">
+      <div className="container auth-shell">
+        <div className="panel auth-panel">
           <span className="eyebrow">Create Account</span>
           <h1 style={{ fontSize: 42 }}>Sign up for faster ordering.</h1>
           <p style={{ marginTop: 12 }}>
@@ -71,6 +71,24 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
             Already have an account? <Link href="/login">Login here</Link>.
           </p>
         </div>
+        <aside className="info-card auth-aside">
+          <span className="eyebrow">Account benefits</span>
+          <h2 style={{ fontSize: 34 }}>Built for repeat gifting and easier support.</h2>
+          <div className="auth-feature-list">
+            <div>
+              <strong>Saved address details</strong>
+              <p>Keep your checkout information ready for the next celebration.</p>
+            </div>
+            <div>
+              <strong>Central order history</strong>
+              <p>Track, review, and revisit past orders without searching messages.</p>
+            </div>
+            <div>
+              <strong>Custom request continuity</strong>
+              <p>Your bespoke inquiries stay visible alongside normal orders.</p>
+            </div>
+          </div>
+        </aside>
       </div>
     </main>
   );

@@ -60,23 +60,33 @@ export default async function AdminPage() {
           <div className="info-card"><strong>{assets.length}</strong><p style={{ marginTop: 8 }}>brand assets uploaded</p></div>
         </div>
 
+        <div className="service-strip">
+          <div>
+            <strong>First-response workflow</strong>
+            <p>Prioritize new orders and custom requests first so the customer-facing tracking and follow-up flow stays credible.</p>
+          </div>
+          <div>
+            <strong>Storefront hygiene</strong>
+            <p>Archive inactive products quickly and keep story, journal, and brand assets current so the site never feels abandoned.</p>
+          </div>
+        </div>
+
         <div className="custom-layout admin-dashboard-layout" style={{ marginTop: 28 }}>
           <section style={{ display: "grid", gap: 18 }}>
             <div className="panel">
               <h3 style={{ fontSize: 26 }}>Products</h3>
               {products.map((product) => (
                 <div
-                  className="summary-row"
+                  className="admin-dashboard-product-row"
                   data-testid={`admin-product-${product.slug}`}
                   key={product.id}
-                  style={{ padding: "12px 0", borderBottom: "1px solid rgba(211,195,189,0.35)" }}
                 >
-                  <div>
+                  <div className="admin-dashboard-product-meta">
                     <span>{product.name} • {product.slug}</span>
                     <p className="subtle">{product.active ? "Active" : "Inactive"}</p>
                   </div>
-                  <div className="cta-row">
-                    <strong>{formatInr(product.priceInr)}</strong>
+                  <div className="admin-dashboard-product-actions">
+                    <strong className="admin-dashboard-product-price">{formatInr(product.priceInr)}</strong>
                     <Link className="button-small" href={`/admin/products/${product.id}/edit`}>Edit</Link>
                     <form action={deleteProductAction}>
                       <input type="hidden" name="id" value={product.id} />

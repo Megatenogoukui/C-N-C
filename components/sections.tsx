@@ -19,18 +19,23 @@ export function HomeHero() {
       <div className="container hero-content">
         <span className="eyebrow">Homemade Treats • Mulund East, Mumbai</span>
         <h1>
-          Homemade treats <em>for you</em>.
+          Celebration cakes that feel <em>personal</em>, not mass produced.
         </h1>
         <p className="lead" style={{ marginTop: 24 }}>
-          C &quot;N&quot; C brings cakes, brownies, cupcakes, chocolates, and celebration orders together in one warm, conversion-ready storefront built for a single-city brand.
+          C &quot;N&quot; C brings together the quick order path for everyday gifting and a guided custom flow for centerpiece cakes, all tuned for a single-city bakery that wins on trust, taste, and response speed.
         </p>
         <div className="hero-actions" style={{ marginTop: 34 }}>
           <Link className="button" href="/shop">
-            Explore Collections
+            Shop Signature Cakes
           </Link>
           <Link className="button-ghost" href="/custom-cakes">
-            Design a Custom Cake
+            Start a Bespoke Brief
           </Link>
+        </div>
+        <div className="hero-pill-row" style={{ marginTop: 24 }}>
+          {["Eggless options", "Tracked delivery", "WhatsApp concierge", "Custom celebration cakes"].map((item) => (
+            <span className="story-pill" key={item}>{item}</span>
+          ))}
         </div>
         <div className="stats-row">
           <div className="stats-card">
@@ -39,12 +44,22 @@ export function HomeHero() {
           </div>
           <div className="stats-card">
             <strong>24h</strong>
-            <span className="subtle">preorder lead for most designs</span>
+            <span className="subtle">preorder lead for most signatures</span>
           </div>
           <div className="stats-card">
             <strong>4.9/5</strong>
             <span className="subtle">customer rating across signature range</span>
           </div>
+        </div>
+        <div className="hero-trust-grid">
+          <article className="trust-card">
+            <strong>Delivery clarity</strong>
+            <p>Checkout keeps date, slot, serviceability, and payment mode visible before the order is placed.</p>
+          </article>
+          <article className="trust-card">
+            <strong>Catalog + custom flow</strong>
+            <p>Quick-buy products stay fast, while themed and occasion-led orders move into a guided design brief.</p>
+          </article>
         </div>
       </div>
     </section>
@@ -101,9 +116,9 @@ export function StorySection() {
         </div>
         <div className="story-copy">
           <span className="eyebrow">Freshly Homemade</span>
-          <h2>A simpler, warmer bakery experience that feels easier to trust.</h2>
+          <h2>A storefront built around confidence, not guesswork.</h2>
           <p className="lead" style={{ marginTop: 18 }}>
-            C &quot;N&quot; C should feel like a modern neighborhood bakery with strong visuals, clear ordering, and a calmer interface, not a cluttered luxury template.
+            Every surface should answer the buying questions early: what to order, when it can arrive, whether it is serviceable, and how to get help without dropping out of the journey.
           </p>
           <div className="story-points">
             {highlights.map((item) => (
@@ -133,7 +148,12 @@ export function CollectionSection() {
       <div className="container">
         <span className="eyebrow">Categories</span>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 18, alignItems: "flex-end", marginBottom: 8 }}>
-          <h2>Curated Selections</h2>
+          <div>
+            <h2>Curated Selections</h2>
+            <p className="lead" style={{ marginTop: 12 }}>
+              Shop by occasion first, then refine by flavor or dietary need once you are inside the catalog.
+            </p>
+          </div>
           <Link href="/shop" className="button-ghost">
             View All Collections
           </Link>
@@ -156,6 +176,9 @@ export function BestsellerSection({ products }: { products: StoreProduct[] }) {
           <div>
             <span className="eyebrow">Bestsellers</span>
             <h2>House Favourites</h2>
+            <p className="lead" style={{ marginTop: 12 }}>
+              These are the fastest yes for birthdays, gifting, and weekend orders.
+            </p>
           </div>
           <Link href="/shop" className="button-small">
             Browse Full Menu
@@ -190,15 +213,20 @@ export function CustomCtaSection() {
             </span>
             <h2>Need a custom cake for the occasion?</h2>
             <p className="lead" style={{ color: "rgba(255,255,255,0.84)", marginTop: 20 }}>
-              Use the custom cake form for theme cakes, celebration cakes, and larger order requests while keeping the everyday treats easy to buy from the catalog.
+              Use the custom cake brief for theme cakes, milestone celebrations, and orders that need more than a standard product page can capture.
             </p>
             <div className="cta-row" style={{ marginTop: 28 }}>
               <Link className="button-secondary" href="/custom-cakes">
-                Consult Our Cake Artist
+                Build Your Brief
               </Link>
               <Link className="button-ghost" href="/faq" style={{ borderColor: "rgba(255,255,255,0.4)", color: "white" }}>
                 How It Works
               </Link>
+            </div>
+            <div className="hero-pill-row" style={{ marginTop: 24 }}>
+              {["Theme references", "Budget guidance", "Servings & date", "Preferred follow-up channel"].map((item) => (
+                <span className="story-pill story-pill-inverse" key={item}>{item}</span>
+              ))}
             </div>
           </div>
         </div>
@@ -257,6 +285,16 @@ export function JourneySection() {
               <p style={{ marginTop: 10 }}>{copy}</p>
             </article>
           ))}
+        </div>
+        <div className="service-strip">
+          <div>
+            <strong>Need help deciding?</strong>
+            <p>Use the WhatsApp concierge for flavor guidance, delivery checks, and custom-order routing.</p>
+          </div>
+          <div>
+            <strong>Planning a celebration?</strong>
+            <p>Start with the catalog for simple orders and switch to the custom brief only when the request is genuinely bespoke.</p>
+          </div>
         </div>
       </div>
     </section>

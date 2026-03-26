@@ -1,11 +1,17 @@
 import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { MongoClient, ObjectId } from "mongodb";
-import { chromium } from "playwright";
+import { click, expectVisible, fill, goto, launchBrowser } from "./e2e-helpers.mjs";
 
-const baseUrl = "http://127.0.0.1:3000";
 const statuses = ["PENDING", "ACCEPTED", "BAKING", "OUT_FOR_DELIVERY", "DELIVERED"];
 const orderNumber = `CNC-TRACK-${Date.now().toString().slice(-6)}`;
+const statusToTitle = {
+  PENDING: "Pending",
+  ACCEPTED: "Accepted",
+  BAKING: "Baking",
+  OUT_FOR_DELIVERY: "Out for Delivery",
+  DELIVERED: "Delivered"
+};
 
 async function seedOrder() {
   const client = new MongoClient(process.env.DATABASE_URL);
@@ -123,23 +129,24 @@ async function seedOrder() {
   await client.close();
 }
 
-const browser = await chromium.launch({ headless: true });
+const browser = await launchBrowser();
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
 const page = await context.newPage();
 
 async function loginAdmin() {
-  await page.goto(`${baseUrl}/login?callbackUrl=/admin`, { waitUntil: "domcontentloaded", timeout: 60000 });
-  await page.fill('input[name="email"]', "admin@cnc.local");
-  await page.fill('input[name="password"]', "admin123");
-  await page.click('button:has-text("Login")');
+  await goto(page, "/login?callbackUrl=/admin", { timeout: 60000 });
+  await fill(page, 'input[name="email"]', "admin@cnc.local");
+  await fill(page, 'input[name="password"]', "admin123");
+  await click(page, 'button:has-text("Login")');
   await page.waitForTimeout(1500);
   if (!page.url().includes("/admin")) {
     throw new Error(`Admin login did not reach /admin. Current URL: ${page.url()}`);
   }
+  await expectVisible(page, "text=Admin dashboard.", "admin dashboard");
 }
 
 async function setStatus(status) {
-  await page.goto(`${baseUrl}/admin`, { waitUntil: "domcontentloaded", timeout: 60000 });
+  await goto(page, "/admin", { timeout: 60000 });
   const row = page.locator(`[data-testid="admin-order-${orderNumber}"]`).first();
   await row.waitFor({ state: "visible", timeout: 30000 });
   await row.locator(`[data-testid="admin-order-status-${orderNumber}"]`).selectOption(status);
@@ -148,7 +155,7 @@ async function setStatus(status) {
 }
 
 async function readTracking() {
-  await page.goto(`${baseUrl}/track-order?order=${orderNumber}`, { waitUntil: "domcontentloaded", timeout: 60000 });
+  await goto(page, `/track-order?order=${orderNumber}`, { timeout: 60000 });
   await page.waitForTimeout(500);
   return page.locator(".tracking-step").evaluateAll((nodes) =>
     nodes.map((node) => ({
@@ -165,6 +172,14 @@ const results = [];
 for (const status of statuses) {
   await setStatus(status);
   const tracking = await readTracking();
+  const current = tracking.find((entry) => entry.cls.includes("tracking-step-current"));
+  if (!current) {
+    throw new Error(`No current tracking step found after status ${status}`);
+  }
+  if (!current.text.includes(statusToTitle[status])) {
+    throw new Error(`Expected current tracking step to include ${statusToTitle[status]} after status ${status}, got ${current.text}`);
+  }
+  await expectVisible(page, `text=${statusToTitle[status]}`, `tracking stage ${status}`);
   results.push({ status, tracking });
 }
 

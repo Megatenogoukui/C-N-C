@@ -18,24 +18,30 @@ export default async function AdminContentPage({ searchParams }: ContentPageProp
   const session = await auth();
   if (!session?.user) redirect("/login?callbackUrl=/admin/content");
   if (session.user.role !== "ADMIN") redirect("/account");
+  const params = await searchParams;
+  let entries: Awaited<ReturnType<typeof db.contentEntry.findMany>> = [];
+  let dataWarning: string | null = null;
 
-  const [params, entries] = await Promise.all([
-    searchParams,
-    db.contentEntry.findMany({ orderBy: { sortOrder: "asc" } })
-  ]);
+  try {
+    entries = await db.contentEntry.findMany({ orderBy: { sortOrder: "asc" } });
+  } catch (error) {
+    console.error("admin content lookup failed", error);
+    dataWarning = "Content entries could not be loaded right now. The editor remains available.";
+  }
 
   return (
-    <main className="section section-soft">
-      <div className="container" style={{ maxWidth: 980 }}>
-        <div className="panel">
-          <span className="eyebrow">Admin</span>
-          <h1 style={{ fontSize: 42 }}>Manage Story & Journal</h1>
-          <p style={{ marginTop: 12 }}>
-            Add or update About-page story blocks and Journal entries from one place.
-          </p>
-          {params.error ? <div className="info-card" style={{ marginTop: 16, color: "#8f2d24" }}>{params.error}</div> : null}
+    <section className="panel admin-panel">
+      <div className="admin-panel-header">
+        <span className="eyebrow">Admin</span>
+        <h1 style={{ fontSize: 42 }}>Manage Story & Journal</h1>
+        <p style={{ marginTop: 12 }}>
+          Add or update About-page story blocks and Journal entries from one place.
+        </p>
+      </div>
+      {params.error ? <div className="info-card" style={{ color: "#8f2d24" }}>{params.error}</div> : null}
+      {dataWarning ? <div className="info-card" style={{ color: "#8f2d24" }}>{dataWarning}</div> : null}
 
-          <form action={upsertContentEntryAction} style={{ display: "grid", gap: 16, marginTop: 24 }}>
+      <form action={upsertContentEntryAction} style={{ display: "grid", gap: 16, marginTop: 8 }}>
             <div className="field-grid two">
               <label>
                 <span className="field-label">Type</span>
@@ -77,19 +83,17 @@ export default async function AdminContentPage({ searchParams }: ContentPageProp
               <span>Published</span>
             </label>
             <button className="button" type="submit">Save Content</button>
-          </form>
+      </form>
 
-          <div style={{ display: "grid", gap: 12, marginTop: 28 }}>
-            {entries.map((entry) => (
-              <div className="info-card" key={entry.id}>
-                <strong>{entry.title}</strong>
-                <p style={{ marginTop: 8 }}>{entry.type} • /{entry.slug} • Sort {entry.sortOrder}</p>
-                <p className="subtle" style={{ marginTop: 8 }}>{entry.excerpt || entry.body}</p>
-              </div>
-            ))}
+      <div style={{ display: "grid", gap: 12, marginTop: 28 }}>
+        {entries.map((entry) => (
+          <div className="info-card" key={entry.id}>
+            <strong>{entry.title}</strong>
+            <p style={{ marginTop: 8 }}>{entry.type} • /{entry.slug} • Sort {entry.sortOrder}</p>
+            <p className="subtle" style={{ marginTop: 8 }}>{entry.excerpt || entry.body}</p>
           </div>
-        </div>
+        ))}
       </div>
-    </main>
+    </section>
   );
 }

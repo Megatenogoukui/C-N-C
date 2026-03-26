@@ -18,8 +18,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <main className="section section-soft">
-      <div className="container" style={{ maxWidth: 560 }}>
-        <div className="panel">
+      <div className="container auth-shell">
+        <div className="panel auth-panel">
           <span className="eyebrow">Login</span>
           <h1 style={{ fontSize: 42 }}>Sign in to continue.</h1>
           <p style={{ marginTop: 12 }}>
@@ -59,6 +59,24 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <p>Admin: `admin@cnc.local` / `admin123`</p>
           </div>
         </div>
+        <aside className="info-card auth-aside">
+          <span className="eyebrow">Why sign in</span>
+          <h2 style={{ fontSize: 34 }}>Keep the entire order lifecycle in one place.</h2>
+          <div className="auth-feature-list">
+            <div>
+              <strong>Track live progress</strong>
+              <p>Jump straight into order status updates after checkout.</p>
+            </div>
+            <div>
+              <strong>Save checkout details</strong>
+              <p>Reduce repeat form filling for future orders.</p>
+            </div>
+            <div>
+              <strong>Manage reviews</strong>
+              <p>Delivered products can be rated from your order history.</p>
+            </div>
+          </div>
+        </aside>
       </div>
     </main>
   );

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ProductCard } from "@/components/cards";
 import { getProducts } from "@/lib/catalog";
 
@@ -29,13 +30,23 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         <span className="eyebrow">Shop</span>
         <h1 style={{ fontSize: 68 }}>Our Collections</h1>
         <p className="lead" style={{ marginTop: 18 }}>
-          Discover occasion-led cakes, editorial signatures, gift-ready combinations, and premium flavors crafted for one-city luxury delivery.
+          Discover occasion-led cakes, gift-ready signatures, and quick-order favorites crafted for trusted local delivery.
         </p>
+        <div className="hero-pill-row" style={{ marginTop: 22 }}>
+          <Link href="/shop?occasion=Birthday" className="story-pill">Birthday</Link>
+          <Link href="/shop?occasion=Anniversary" className="story-pill">Anniversary</Link>
+          <Link href="/shop?occasion=Chocolate" className="story-pill">Chocolate</Link>
+          <Link href="/shop?eggless=1" className="story-pill">Eggless</Link>
+          <Link href="/custom-cakes" className="story-pill">Need custom?</Link>
+        </div>
       </div>
 
       <div className="container shop-layout" style={{ marginTop: 28 }}>
-        <aside className="panel">
+        <aside className="panel shop-filter-panel">
           <h3 style={{ fontSize: 26 }}>Refine</h3>
+          <p className="subtle" style={{ marginTop: 10 }}>
+            Narrow the catalog only after you have landed on the right occasion. If nothing fits cleanly, switch to the custom brief.
+          </p>
           <form action="/shop" method="get" style={{ display: "grid", gap: 24, marginTop: 20 }}>
             <div>
               <label className="field-label">Occasion</label>
@@ -65,6 +76,12 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
               Apply Filters
             </button>
           </form>
+          <div className="info-card" style={{ marginTop: 18 }}>
+            <strong>Ordering tip</strong>
+            <p style={{ marginTop: 8 }}>
+              For birthdays and gifting, the catalog is the fastest route. For themes, sculpted cakes, or design-heavy references, use the custom cake form.
+            </p>
+          </div>
         </aside>
 
         <section className="product-grid">

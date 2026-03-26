@@ -95,6 +95,16 @@ export default async function TrackOrderPage({ searchParams }: TrackingPageProps
               This order has been cancelled. Please contact WhatsApp support if you need clarification or a replacement order.
             </div>
           ) : null}
+          <div className="service-strip" style={{ marginTop: 20 }}>
+            <div>
+              <strong>Status updates</strong>
+              <p>Tracking changes only after the kitchen or admin team updates the order manually.</p>
+            </div>
+            <div>
+              <strong>Need intervention?</strong>
+              <p>Use WhatsApp support for delivery notes, address corrections, or payment clarification.</p>
+            </div>
+          </div>
           <div className="tracking-grid">
             {TRACKING_STAGES.map((stage, index) => {
               const state = isCancelled

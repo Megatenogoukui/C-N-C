@@ -15,16 +15,26 @@ export default async function AdminRequestsPage() {
   if (!session?.user) redirect("/login?callbackUrl=/admin/requests");
   if (session.user.role !== "ADMIN") redirect("/account");
 
-  const requests = await db.customCakeRequest.findMany({
-    orderBy: { createdAt: "desc" }
-  });
+  let requests: Awaited<ReturnType<typeof db.customCakeRequest.findMany>> = [];
+  let dataWarning: string | null = null;
+
+  try {
+    requests = await db.customCakeRequest.findMany({
+      orderBy: { createdAt: "desc" }
+    });
+  } catch (error) {
+    console.error("admin requests lookup failed", error);
+    dataWarning = "Custom request data is temporarily unavailable. The page is still usable, but live records could not be loaded.";
+  }
 
   return (
-    <main className="section section-soft">
-      <div className="container">
+    <section className="panel admin-panel">
+      <div className="admin-panel-header">
         <span className="eyebrow">Admin</span>
         <h1 style={{ fontSize: 48 }}>Custom cake requests.</h1>
-        <div style={{ display: "grid", gap: 18, marginTop: 24 }}>
+      </div>
+      {dataWarning ? <div className="info-card" style={{ color: "#8f2d24" }}>{dataWarning}</div> : null}
+      <div style={{ display: "grid", gap: 18, marginTop: 8 }}>
           {requests.length ? requests.map((request) => (
             <section className="panel" data-testid={`admin-request-${request.id}`} key={request.id}>
               <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap", alignItems: "flex-start" }}>
@@ -54,8 +64,7 @@ export default async function AdminRequestsPage() {
           )) : (
             <div className="info-card">No custom requests yet.</div>
           )}
-        </div>
       </div>
-    </main>
+    </section>
   );
 }

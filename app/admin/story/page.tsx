@@ -8,10 +8,18 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminStoryPage() {
-  const entries = await db.contentEntry.findMany({
-    where: { type: "STORY" },
-    orderBy: { sortOrder: "asc" }
-  });
+  let entries: Awaited<ReturnType<typeof db.contentEntry.findMany>> = [];
+  let dataWarning: string | null = null;
+
+  try {
+    entries = await db.contentEntry.findMany({
+      where: { type: "STORY" },
+      orderBy: { sortOrder: "asc" }
+    });
+  } catch (error) {
+    console.error("admin story lookup failed", error);
+    dataWarning = "Story entries could not be loaded right now. You can still submit new content.";
+  }
 
   return (
     <section className="panel admin-panel">
@@ -22,6 +30,7 @@ export default async function AdminStoryPage() {
           <p>Everything saved here appears on the customer-facing story page.</p>
         </div>
       </div>
+      {dataWarning ? <div className="info-card" style={{ color: "#8f2d24" }}>{dataWarning}</div> : null}
       <form action={upsertContentEntryAction} className="admin-content-form">
         <input type="hidden" name="type" value="STORY" />
         <div className="field-grid two">

@@ -38,6 +38,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
     <main className="section">
       <div className="container product-layout">
         <section className="panel">
+          <div className="product-breadcrumbs">
+            <Link href="/shop">Shop</Link>
+            <span>/</span>
+            <span>{product.category}</span>
+          </div>
           <div className="gallery-main">
             <Image src={product.image} alt={product.name} fill sizes="(max-width:1080px) 100vw, 50vw" />
           </div>
@@ -96,6 +101,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   <li key={highlight}>{highlight}</li>
                 ))}
               </ul>
+            </div>
+          </div>
+
+          <div className="service-strip product-service-strip" style={{ marginTop: 24 }}>
+            <div>
+              <strong>Best for</strong>
+              <p>{product.occasion} celebrations, gifting, and customers who want a polished signature without a long briefing cycle.</p>
+            </div>
+            <div>
+              <strong>Need a variation?</strong>
+              <p>Use the custom brief if you need a different finish, size direction, or a theme-led version of this design.</p>
             </div>
           </div>
 

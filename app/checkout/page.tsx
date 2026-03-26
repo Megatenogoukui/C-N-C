@@ -21,7 +21,10 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
     <main className="section section-soft">
       <div className="container">
         <span className="eyebrow">Checkout</span>
-        <h1 style={{ fontSize: 64 }}>Luxury checkout, without friction.</h1>
+        <h1 style={{ fontSize: 64 }}>Checkout built for clarity.</h1>
+        <p className="lead" style={{ marginTop: 18 }}>
+          Confirm customer details, delivery timing, and payment mode once, without losing sight of support options or local serviceability.
+        </p>
         <div className="custom-layout" style={{ marginTop: 28 }}>
           <section className="panel">
             {params.error ? (
@@ -30,6 +33,16 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
               </div>
             ) : null}
             <form action={submitCheckout} style={{ display: "grid", gap: 18 }}>
+              <div className="service-strip">
+                <div>
+                  <strong>Service area</strong>
+                  <p>{businessConfig.city} with managed delivery across approved pincodes only.</p>
+                </div>
+                <div>
+                  <strong>Lead time</strong>
+                  <p>Most signature products should be ordered at least 24 hours ahead for smooth kitchen planning.</p>
+                </div>
+              </div>
               <div className="field-grid two">
                 <label><span className="field-label">First Name</span><input className="input" name="firstName" required /></label>
                 <label><span className="field-label">Last Name</span><input className="input" name="lastName" required /></label>
@@ -44,11 +57,8 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
                   </select>
                 </label>
                 <label>
-                  <span className="field-label">Order Type</span>
-                  <select className="select" defaultValue="Guest checkout">
-                    <option>Guest checkout</option>
-                    <option>Login later</option>
-                  </select>
+                  <span className="field-label">Order Journey</span>
+                  <input className="input" value="Guest checkout with optional account login later" disabled />
                 </label>
               </div>
               <label>
@@ -102,6 +112,12 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
             <div className="summary-row" style={{ paddingTop: 18, borderTop: "1px solid rgba(211,195,189,0.5)" }}>
               <span>Total</span>
               <strong className="price">{formatInr(cart.total)}</strong>
+            </div>
+            <div className="info-card" style={{ marginTop: 18 }}>
+              <strong>Need help before paying?</strong>
+              <p style={{ marginTop: 8 }}>
+                Keep this flow for standard catalog items. If the cake needs a theme brief, inspiration references, or manual design approval, use the custom cake form instead.
+              </p>
             </div>
           </aside>
         </div>

@@ -8,10 +8,18 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminJournalPage() {
-  const entries = await db.contentEntry.findMany({
-    where: { type: "JOURNAL" },
-    orderBy: { sortOrder: "asc" }
-  });
+  let entries: Awaited<ReturnType<typeof db.contentEntry.findMany>> = [];
+  let dataWarning: string | null = null;
+
+  try {
+    entries = await db.contentEntry.findMany({
+      where: { type: "JOURNAL" },
+      orderBy: { sortOrder: "asc" }
+    });
+  } catch (error) {
+    console.error("admin journal lookup failed", error);
+    dataWarning = "Journal entries could not be loaded right now. You can still submit new content.";
+  }
 
   return (
     <section className="panel admin-panel">
@@ -22,6 +30,7 @@ export default async function AdminJournalPage() {
           <p>Use this page for blog-like posts, cake guides, seasonal updates, and SEO content.</p>
         </div>
       </div>
+      {dataWarning ? <div className="info-card" style={{ color: "#8f2d24" }}>{dataWarning}</div> : null}
       <form action={upsertContentEntryAction} className="admin-content-form">
         <input type="hidden" name="type" value="JOURNAL" />
         <div className="field-grid two">

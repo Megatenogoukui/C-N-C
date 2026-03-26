@@ -33,18 +33,28 @@ export async function SiteChrome({
     readCartCount(),
     getBrandAssets()
   ]);
+  const isAdmin = session?.user?.role === "ADMIN";
 
   return (
     <div className="page-shell">
       <header className="site-header">
+        <div className="announcement-bar">
+          <div className="container announcement-bar-inner">
+            <p>Freshly baked in {businessConfig.city} • Delivery across {businessConfig.serviceablePincodes.length} local pincodes</p>
+            <div className="announcement-links">
+              <Link href="/track-order">Track order</Link>
+              <Link href={getWhatsAppUrl("Hello C N C, I need help choosing a cake.")}>WhatsApp concierge</Link>
+            </div>
+          </div>
+        </div>
         <div className="container site-nav">
           <MenuDrawer
-            accountHref={session?.user ? (session.user.role === "ADMIN" ? "/admin" : "/account") : undefined}
-            accountLabel={session?.user ? (session.user.role === "ADMIN" ? "Admin" : "Account") : undefined}
+            accountHref={session?.user ? (isAdmin ? "/admin" : "/account") : undefined}
+            accountLabel={session?.user ? (isAdmin ? "Admin" : "Account") : undefined}
             cartCount={cartCount}
-            navItems={session?.user?.role === "ADMIN" ? adminNavItems : navItems}
+            navItems={isAdmin ? adminNavItems : navItems}
             supportHref={getWhatsAppUrl("Hello C N C, I need help with an order.")}
-            variant={session?.user?.role === "ADMIN" ? "admin" : "store"}
+            variant={isAdmin ? "admin" : "store"}
           />
           <Link href="/" className="brand-mark site-brand">
             {assets.logo ? (
@@ -54,19 +64,30 @@ export async function SiteChrome({
             )}
             <span className="brand-subtitle">Cakes "N" Chocolates</span>
           </Link>
-          <div className="header-spacer" aria-hidden="true" />
+          <div className="header-spacer">
+            {isAdmin ? null : (
+              <Link href="/cart" className="header-cart-link" aria-label={`Cart with ${cartCount} item${cartCount === 1 ? "" : "s"}`}>
+                Cart
+                <span>{cartCount}</span>
+              </Link>
+            )}
+          </div>
         </div>
       </header>
       {children}
-      <Link href={getWhatsAppUrl("Hello C N C, I want to order cakes or chocolates.")} className="whatsapp-fab" aria-label="WhatsApp support">
-        WA
-      </Link>
-      <nav className="mobile-nav">
-        <Link href="/">Home</Link>
-        <Link href="/shop">Shop</Link>
-        <Link href="/custom-cakes">Custom</Link>
-        <Link href="/cart">Cart</Link>
-      </nav>
+      {isAdmin ? null : (
+        <>
+          <Link href={getWhatsAppUrl("Hello C N C, I want to order cakes or chocolates.")} className="whatsapp-fab" aria-label="WhatsApp support">
+            WA
+          </Link>
+          <nav className="mobile-nav">
+            <Link href="/">Home</Link>
+            <Link href="/shop">Shop</Link>
+            <Link href="/custom-cakes">Custom</Link>
+            <Link href="/cart">Cart</Link>
+          </nav>
+        </>
+      )}
       <footer className="footer">
         <div className="container footer-grid">
           <div>
@@ -77,6 +98,11 @@ export async function SiteChrome({
             <p style={{ marginTop: 16, maxWidth: 320 }}>
               Homemade treats, cakes, brownies, cupcakes, and chocolates crafted for celebrations in {businessConfig.city}.
             </p>
+            <div className="footer-highlight-list">
+              <span>Birthday preorders</span>
+              <span>WhatsApp support</span>
+              <span>Tracked delivery</span>
+            </div>
           </div>
           <div>
             <h4 style={{ fontSize: 18 }}>Collections</h4>

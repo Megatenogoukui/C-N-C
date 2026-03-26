@@ -33,8 +33,13 @@ export default async function CustomCakesPage({ searchParams }: CustomPageProps)
           <span className="eyebrow">The Bespoke Experience</span>
           <h1>Your vision, our craft.</h1>
           <p className="lead" style={{ marginTop: 20 }}>
-            For designs beyond the catalog, this form captures mood, event, servings, budget, and contact preference before a manual follow-up.
+            For designs beyond the catalog, this brief captures mood, event, servings, budget, and contact preference before a manual follow-up.
           </p>
+          <div className="hero-pill-row" style={{ marginTop: 24 }}>
+            {["Mood references", "Event date", "Budget range", "WhatsApp or email follow-up"].map((item) => (
+              <span className="story-pill" key={item}>{item}</span>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -53,6 +58,16 @@ export default async function CustomCakesPage({ searchParams }: CustomPageProps)
             ) : null}
             <form action={submitCustomCake} style={{ display: "grid", gap: 18 }}>
               <h2 style={{ fontSize: 42 }}>Design Consultation</h2>
+              <div className="service-strip">
+                <div>
+                  <strong>When to use this form</strong>
+                  <p>Use it for theme cakes, milestone celebrations, sculpted concepts, and requests that need manual quoting.</p>
+                </div>
+                <div>
+                  <strong>What happens next</strong>
+                  <p>The team reviews the brief, checks feasibility, and follows up on your preferred channel with next steps.</p>
+                </div>
+              </div>
               <label>
                 <span className="field-label">Describe your dream cake</span>
                 <textarea
@@ -135,7 +150,7 @@ export default async function CustomCakesPage({ searchParams }: CustomPageProps)
             <div className="info-card">
               <h3 style={{ fontSize: 30 }}>The curator&apos;s touch</h3>
               <p style={{ marginTop: 14 }}>
-                This page is designed to feel premium rather than transactional. It captures enough structured data for manual review while keeping the bespoke positioning intact.
+                This form is meant to qualify the brief quickly without making the process feel like filling out a procurement document.
               </p>
               <ul style={{ marginTop: 16 }}>
                 <li>Inspiration upload</li>
@@ -143,6 +158,12 @@ export default async function CustomCakesPage({ searchParams }: CustomPageProps)
                 <li>Preferred follow-up channel</li>
                 <li>Manual follow-up queue inside admin</li>
               </ul>
+            </div>
+            <div className="info-card">
+              <h3 style={{ fontSize: 26 }}>Response expectations</h3>
+              <p style={{ marginTop: 12 }}>
+                The best briefs are specific about mood, colors, finish, servings, and date flexibility. That reduces back-and-forth and helps the team confirm direction faster.
+              </p>
             </div>
             <div className="image-strip">
               {[
