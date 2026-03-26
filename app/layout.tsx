@@ -25,6 +25,9 @@ export async function generateMetadata(): Promise<Metadata> {
     authors: [{ name: 'C "N" C Cakes "N" Chocolates' }],
     creator: 'C "N" C Cakes "N" Chocolates',
     publisher: 'C "N" C Cakes "N" Chocolates',
+    verification: {
+      google: "kxTfGI5vjFQ9qUWhptKuDUODS3wxgH3XQtwKC-vFEvU"
+    },
     robots: {
       index: true,
       follow: true,
