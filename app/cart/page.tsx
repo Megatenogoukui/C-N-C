@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { updateCart } from "@/app/actions";
+import { PendingSubmitButton } from "@/components/pending-submit-button";
 import { readCartLines } from "@/lib/cart";
 import { formatInr } from "@/lib/storefront-data";
 
@@ -35,24 +36,24 @@ export default async function CartPage() {
                       <form action={updateCart}>
                         <input type="hidden" name="slug" value={line.slug} />
                         <input type="hidden" name="action" value="decrease" />
-                        <button className="button-small" type="submit">
+                        <PendingSubmitButton className="button-small" pendingLabel="...">
                           −
-                        </button>
+                        </PendingSubmitButton>
                       </form>
                       <span>{line.quantity}</span>
                       <form action={updateCart}>
                         <input type="hidden" name="slug" value={line.slug} />
                         <input type="hidden" name="action" value="increase" />
-                        <button className="button-small" type="submit">
+                        <PendingSubmitButton className="button-small" pendingLabel="...">
                           +
-                        </button>
+                        </PendingSubmitButton>
                       </form>
                       <form action={updateCart}>
                         <input type="hidden" name="slug" value={line.slug} />
                         <input type="hidden" name="action" value="remove" />
-                        <button className="button-ghost" type="submit">
+                        <PendingSubmitButton className="button-ghost" pendingLabel="Removing...">
                           Remove
-                        </button>
+                        </PendingSubmitButton>
                       </form>
                     </div>
                   </div>

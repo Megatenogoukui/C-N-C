@@ -7,6 +7,7 @@ import { businessConfig } from "@/lib/business";
 import { readCartEntries, writeCartEntries } from "@/lib/cart";
 import { db } from "@/lib/db";
 import { PAYMENT_STATUSES } from "@/lib/db-types";
+import { buildFormRedirectParams } from "@/lib/form-state";
 import { getProductBySlugs } from "@/lib/catalog";
 import { canReviewProduct } from "@/lib/reviews";
 import { checkoutSchema, customCakeSchema, reviewSchema } from "@/lib/validation";
@@ -37,7 +38,7 @@ export async function updateCart(formData: FormData) {
   const current = entries.find((entry) => entry.slug === slug);
 
   if (!current) {
-    redirect("/cart");
+    return;
   }
 
   if (action === "increase") {
@@ -49,7 +50,8 @@ export async function updateCart(formData: FormData) {
   }
 
   await writeCartEntries(entries.filter((entry) => entry.quantity > 0));
-  redirect("/cart");
+  revalidatePath("/cart");
+  revalidatePath("/", "layout");
 }
 
 export async function submitCheckout(formData: FormData) {
@@ -86,7 +88,24 @@ export async function submitCheckout(formData: FormData) {
 
   if (!parsed.success) {
     const message = parsed.error.issues[0]?.message || "Checkout details are invalid";
-    redirect(`/checkout?error=${encodeURIComponent(message)}`);
+    const invalidField = String(parsed.error.issues[0]?.path?.[0] || "");
+    const params = buildFormRedirectParams(
+      {
+        firstName: String(formData.get("firstName") || ""),
+        lastName: String(formData.get("lastName") || ""),
+        email: String(formData.get("email") || session?.user?.email || ""),
+        phone: String(formData.get("phone") || ""),
+        pincode: String(formData.get("pincode") || ""),
+        deliveryDate: String(formData.get("deliveryDate") || ""),
+        slot: String(formData.get("slot") || ""),
+        address: String(formData.get("address") || ""),
+        payment: String(formData.get("payment") || "COD"),
+        instructions: String(formData.get("instructions") || "")
+      },
+      message,
+      invalidField
+    );
+    redirect(`/checkout?${params.toString()}`);
   }
 
   const checkout = parsed.data;

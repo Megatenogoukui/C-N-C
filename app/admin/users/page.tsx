@@ -46,12 +46,12 @@ export default async function AdminUsersPage() {
         {users.map((user) => (
           <article className="admin-entity-card" key={user.id}>
             <div className="admin-entity-main">
-              <div>
+              <div className="admin-user-meta">
                 <strong>{user.name || "Unnamed user"}</strong>
                 <p>{user.email || "No email"}{user.phone ? ` • ${user.phone}` : ""}</p>
                 <p className="subtle">{user.address || "No saved address"}{user.pincode ? ` • ${user.pincode}` : ""}</p>
               </div>
-              <div className="pill-list">
+              <div className="pill-list admin-user-pills">
                 <span className="admin-status-pill">{user.role}</span>
                 <span className={`admin-status-pill ${user.blockedAt ? "admin-status-danger" : "admin-status-success"}`}>
                   {user.blockedAt ? "Blocked" : "Active"}
@@ -59,7 +59,7 @@ export default async function AdminUsersPage() {
                 <span className="admin-status-pill">{orderCountByUser.get(user.id) || 0} orders</span>
               </div>
             </div>
-            <div className="admin-card-actions">
+            <div className="admin-card-actions admin-user-actions">
               <form action={updateUserRoleAction} className="admin-inline-form">
                 <input type="hidden" name="id" value={user.id} />
                 <select className="select" defaultValue={user.role} name="role">

@@ -13,7 +13,15 @@ export const metadata: Metadata = {
 };
 
 type AccountPageProps = {
-  searchParams: Promise<{ error?: string; updated?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    updated?: string;
+    invalidField?: string;
+    name?: string;
+    phone?: string;
+    address?: string;
+    pincode?: string;
+  }>;
 };
 
 export default function AccountPage({ searchParams }: AccountPageProps) {
@@ -70,6 +78,8 @@ async function AccountPageInner({ searchParams }: AccountPageProps) {
   }
 
   const params = await searchParams;
+  const invalidField = params.invalidField || "";
+  const fieldClass = (baseClass: string, field: string) => invalidField === field ? `${baseClass} field-input-error` : baseClass;
 
   return (
     <main className="section section-soft">
@@ -120,11 +130,11 @@ async function AccountPageInner({ searchParams }: AccountPageProps) {
                 <div className="field-grid two">
                   <label>
                     <span className="field-label">Full Name</span>
-                    <input className="input" name="name" defaultValue={user.name || ""} required />
+                    <input className={fieldClass("input", "name")} name="name" defaultValue={params.name || user.name || ""} required />
                   </label>
                   <label>
                     <span className="field-label">Phone</span>
-                    <input className="input" name="phone" defaultValue={user.phone || ""} required />
+                    <input className={fieldClass("input", "phone")} name="phone" defaultValue={params.phone || user.phone || ""} required />
                   </label>
                 </div>
                 <div className="field-grid two">
@@ -134,12 +144,12 @@ async function AccountPageInner({ searchParams }: AccountPageProps) {
                   </label>
                   <label>
                     <span className="field-label">Pincode</span>
-                    <input className="input" name="pincode" defaultValue={user.pincode || ""} required />
+                    <input className={fieldClass("input", "pincode")} name="pincode" defaultValue={params.pincode || user.pincode || ""} required />
                   </label>
                 </div>
                 <label>
                   <span className="field-label">Address</span>
-                  <textarea className="textarea" name="address" defaultValue={user.address || ""} required />
+                  <textarea className={fieldClass("textarea", "address")} name="address" defaultValue={params.address || user.address || ""} required />
                 </label>
                 <div className="account-form-footer">
                   <p className="subtle">Keep these details current so checkout stays fast and support can confirm delivery quickly.</p>

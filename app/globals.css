@@ -539,6 +539,14 @@ p {
   margin-top: 28px;
 }
 
+.service-strip {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.journey-grid + .service-strip {
+  margin-top: 28px;
+}
+
 .trust-card,
 .service-strip > div {
   padding: 18px 20px;
@@ -716,11 +724,10 @@ p {
 }
 
 .admin-entity-main {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 16px;
   align-items: flex-start;
-  flex-wrap: wrap;
 }
 
 .admin-card-actions,
@@ -730,6 +737,31 @@ p {
   gap: 10px;
   align-items: center;
   flex-wrap: wrap;
+}
+
+.admin-user-meta {
+  min-width: 0;
+}
+
+.admin-user-meta strong,
+.admin-user-meta p {
+  overflow-wrap: anywhere;
+}
+
+.admin-user-pills {
+  justify-content: flex-end;
+  align-self: start;
+}
+
+.admin-user-actions {
+  display: grid;
+  grid-template-columns: minmax(280px, auto) auto;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-user-actions form {
+  margin: 0;
 }
 
 .admin-order-items {
@@ -1465,6 +1497,11 @@ p {
   resize: vertical;
 }
 
+.field-input-error {
+  border-color: #b13a32;
+  box-shadow: 0 0 0 3px rgba(177, 58, 50, 0.12);
+}
+
 .upload-shell {
   border-radius: 20px;
   border: 2px dashed rgba(211, 195, 189, 0.9);
@@ -1770,6 +1807,15 @@ p {
     grid-template-columns: 1fr;
   }
 
+  .admin-entity-main,
+  .admin-user-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-user-pills {
+    justify-content: flex-start;
+  }
+
   .brand-mark {
     align-items: center;
   }
@@ -1788,6 +1834,10 @@ p {
 
   .content-split,
   .image-composition {
+    grid-template-columns: 1fr;
+  }
+
+  .service-strip {
     grid-template-columns: 1fr;
   }
 

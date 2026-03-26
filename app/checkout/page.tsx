@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { submitCheckout } from "@/app/actions";
+import { auth } from "@/auth";
 import { businessConfig } from "@/lib/business";
 import { readCartLines } from "@/lib/cart";
+import { db } from "@/lib/db";
 import { formatInr } from "@/lib/storefront-data";
 
 export const metadata: Metadata = {
@@ -10,12 +12,54 @@ export const metadata: Metadata = {
 };
 
 type CheckoutPageProps = {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    invalidField?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    pincode?: string;
+    deliveryDate?: string;
+    slot?: string;
+    address?: string;
+    payment?: string;
+    instructions?: string;
+  }>;
 };
 
 export default async function CheckoutPage({ searchParams }: CheckoutPageProps) {
-  const cart = await readCartLines();
-  const params = await searchParams;
+  const [cart, params, session] = await Promise.all([readCartLines(), searchParams, auth()]);
+  const user = session?.user?.id ? await db.user.findUnique({ where: { id: session.user.id } }).catch(() => null) : null;
+  const invalidField = params.invalidField || "";
+  const valueFor = (field: string, fallback = "") => {
+    const queryValue = params[field as keyof typeof params];
+    if (typeof queryValue === "string" && queryValue.length > 0) {
+      return queryValue;
+    }
+    if (field === "email") {
+      return user?.email || session?.user?.email || fallback;
+    }
+    if (field === "phone") {
+      return user?.phone || fallback;
+    }
+    if (field === "pincode") {
+      return user?.pincode || fallback;
+    }
+    if (field === "address") {
+      return user?.address || fallback;
+    }
+    if (field === "firstName") {
+      const name = user?.name || session?.user?.name || "";
+      return name.split(" ").filter(Boolean)[0] || fallback;
+    }
+    if (field === "lastName") {
+      const name = user?.name || session?.user?.name || "";
+      return name.split(" ").slice(1).join(" ") || fallback;
+    }
+    return fallback;
+  };
+  const fieldClass = (baseClass: string, field: string) => invalidField === field ? `${baseClass} field-input-error` : baseClass;
 
   return (
     <main className="section section-soft">
@@ -44,15 +88,15 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
                 </div>
               </div>
               <div className="field-grid two">
-                <label><span className="field-label">First Name</span><input className="input" name="firstName" required /></label>
-                <label><span className="field-label">Last Name</span><input className="input" name="lastName" required /></label>
-                <label><span className="field-label">Email</span><input className="input" name="email" type="email" required /></label>
-                <label><span className="field-label">Phone</span><input className="input" name="phone" required /></label>
-                <label><span className="field-label">Pincode</span><input className="input" name="pincode" placeholder="400081" required /></label>
-                <label><span className="field-label">Delivery Date</span><input className="input" name="deliveryDate" type="date" /></label>
+                <label><span className="field-label">First Name</span><input className={fieldClass("input", "firstName")} defaultValue={valueFor("firstName")} name="firstName" required /></label>
+                <label><span className="field-label">Last Name</span><input className={fieldClass("input", "lastName")} defaultValue={valueFor("lastName")} name="lastName" required /></label>
+                <label><span className="field-label">Email</span><input className={fieldClass("input", "email")} defaultValue={valueFor("email")} name="email" type="email" required /></label>
+                <label><span className="field-label">Phone</span><input className={fieldClass("input", "phone")} defaultValue={valueFor("phone")} name="phone" required /></label>
+                <label><span className="field-label">Pincode</span><input className={fieldClass("input", "pincode")} defaultValue={valueFor("pincode")} name="pincode" placeholder="400081" required /></label>
+                <label><span className="field-label">Delivery Date</span><input className={fieldClass("input", "deliveryDate")} defaultValue={valueFor("deliveryDate")} name="deliveryDate" type="date" /></label>
                 <label>
                   <span className="field-label">Delivery Slot</span>
-                  <select className="select" name="slot" defaultValue={businessConfig.deliverySlots[2]}>
+                  <select className={fieldClass("select", "slot")} name="slot" defaultValue={valueFor("slot", businessConfig.deliverySlots[2])}>
                     {businessConfig.deliverySlots.map((slot) => <option key={slot}>{slot}</option>)}
                   </select>
                 </label>
@@ -63,17 +107,17 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
               </div>
               <label>
                 <span className="field-label">Delivery Address</span>
-                <textarea className="textarea" name="address" required placeholder="House number, street, locality, landmark" />
+                <textarea className={fieldClass("textarea", "address")} defaultValue={valueFor("address")} name="address" required placeholder="House number, street, locality, landmark" />
               </label>
               <div className="info-card">
                 <h3 style={{ fontSize: 22 }}>Payment Mode</h3>
                 <div style={{ display: "grid", gap: 10, marginTop: 12 }}>
                   <label style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                    <input defaultChecked type="radio" name="payment" value="COD" />
+                    <input defaultChecked={valueFor("payment", "COD") === "COD"} type="radio" name="payment" value="COD" />
                     Cash on Delivery
                   </label>
                   <label style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                    <input type="radio" name="payment" value="ONLINE" disabled={!businessConfig.onlinePaymentsEnabled} />
+                    <input defaultChecked={valueFor("payment") === "ONLINE"} type="radio" name="payment" value="ONLINE" disabled={!businessConfig.onlinePaymentsEnabled} />
                     Pay Online {!businessConfig.onlinePaymentsEnabled ? "(coming after gateway setup)" : ""}
                   </label>
                 </div>
@@ -83,7 +127,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
               </div>
               <label>
                 <span className="field-label">Delivery Instructions</span>
-                <textarea className="textarea" name="instructions" placeholder="Call on arrival, front gate security note, etc." />
+                <textarea className={fieldClass("textarea", "instructions")} defaultValue={valueFor("instructions")} name="instructions" placeholder="Call on arrival, front gate security note, etc." />
               </label>
               <button className="button" type="submit">
                 Place Order

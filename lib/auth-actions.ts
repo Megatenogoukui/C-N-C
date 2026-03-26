@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { buildFormRedirectParams } from "@/lib/form-state";
 import { forgotPasswordSchema, profileSchema, registerSchema, resetPasswordSchema } from "@/lib/validation";
 
 export async function registerAction(formData: FormData) {
@@ -125,7 +126,18 @@ export async function updateProfileAction(formData: FormData) {
 
   if (!parsed.success) {
     const message = parsed.error.issues[0]?.message || "Profile details are invalid";
-    redirect(`/account?error=${encodeURIComponent(message)}`);
+    const invalidField = String(parsed.error.issues[0]?.path?.[0] || "");
+    const params = buildFormRedirectParams(
+      {
+        name: String(formData.get("name") || ""),
+        phone: String(formData.get("phone") || ""),
+        address: String(formData.get("address") || ""),
+        pincode: String(formData.get("pincode") || "")
+      },
+      message,
+      invalidField
+    );
+    redirect(`/account?${params.toString()}`);
   }
 
   await db.user.update({

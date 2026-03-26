@@ -18,6 +18,21 @@ export function LoginForm({
     setIsHydrated(true);
   }, []);
 
+  function normalizeResultUrl(value: string | undefined) {
+    if (!value) return callbackUrl;
+
+    try {
+      if (value.startsWith("/")) {
+        return value;
+      }
+
+      const parsed = new URL(value);
+      return `${parsed.pathname}${parsed.search}${parsed.hash}` || callbackUrl;
+    } catch {
+      return callbackUrl;
+    }
+  }
+
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
@@ -42,8 +57,9 @@ export function LoginForm({
       void (async () => {
         const session = await getSession();
         const role = (session?.user as { role?: string } | undefined)?.role;
-        const fallbackUrl = callbackUrl === "/account" && role === "ADMIN" ? "/admin" : callbackUrl;
-        window.location.assign(result?.url || fallbackUrl);
+        const normalizedResultUrl = normalizeResultUrl(result?.url ?? undefined);
+        const targetUrl = callbackUrl === "/account" && role === "ADMIN" ? "/admin" : normalizedResultUrl;
+        window.location.replace(targetUrl);
       })();
     });
   }

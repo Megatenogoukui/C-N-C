@@ -1,15 +1,23 @@
 "use client";
 
+import { useTransition } from "react";
 import { signOut } from "next-auth/react";
 
 export function LogoutButton() {
+  const [isPending, startTransition] = useTransition();
+
   return (
     <button
       className="button-small"
-      onClick={() => signOut({ callbackUrl: "/" })}
+      disabled={isPending}
+      onClick={() => {
+        startTransition(() => {
+          void signOut({ callbackUrl: "/" });
+        });
+      }}
       type="button"
     >
-      Logout
+      {isPending ? "Logging out..." : "Logout"}
     </button>
   );
 }
