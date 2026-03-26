@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { LoginForm } from "@/components/login-form";
 
@@ -12,9 +13,44 @@ export const metadata: Metadata = {
   description: "Customer and admin login with credentials and optional Google OAuth."
 };
 
+const authErrorMessages: Record<string, string> = {
+  OAuthCallback: "Google sign-in could not be completed. Please try again.",
+  OAuthSignin: "Google sign-in could not be started. Please try again.",
+  AccessDenied: "Access was denied for that sign-in attempt.",
+  Configuration: "Authentication is temporarily unavailable. Please try again later."
+};
+
+function normalizeCallbackUrl(value: string | undefined) {
+  if (!value) return "/account";
+
+  try {
+    if (value.startsWith("/")) {
+      return value;
+    }
+
+    const parsed = new URL(value);
+    const path = `${parsed.pathname}${parsed.search}${parsed.hash}`;
+    return path || "/account";
+  } catch {
+    return "/account";
+  }
+}
+
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const session = await auth();
   const params = await searchParams;
+  const callbackUrl = normalizeCallbackUrl(params.callbackUrl);
+
+  if (params.callbackUrl && params.callbackUrl !== callbackUrl) {
+    const nextParams = new URLSearchParams();
+    nextParams.set("callbackUrl", callbackUrl);
+    if (params.error) nextParams.set("error", params.error);
+    if (params.registered) nextParams.set("registered", params.registered);
+    if (params.reset) nextParams.set("reset", params.reset);
+    redirect(`/login?${nextParams.toString()}`);
+  }
+
+  const errorMessage = params.error ? authErrorMessages[params.error] || "Sign-in failed. Please try again." : "";
 
   return (
     <main className="section section-soft">
@@ -31,9 +67,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               <Link href={session.user.role === "ADMIN" ? "/admin" : "/account"}>your dashboard</Link>.
             </div>
           ) : null}
-          {params.error ? (
+          {errorMessage ? (
             <div className="info-card" style={{ marginTop: 20, color: "#8f2d24" }}>
-              {params.error}
+              {errorMessage}
             </div>
           ) : null}
           {params.registered ? (
@@ -46,7 +82,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               Password updated. Log in with your new password.
             </div>
           ) : null}
-          <LoginForm callbackUrl={params.callbackUrl || "/account"} enableGoogle={Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET)} />
+          <LoginForm callbackUrl={callbackUrl} enableGoogle={Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET)} />
           <p className="subtle" style={{ marginTop: 16 }}>
             New here? <Link href="/signup">Create an account</Link>.
           </p>

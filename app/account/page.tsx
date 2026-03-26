@@ -81,6 +81,14 @@ async function AccountPageInner({ searchParams }: AccountPageProps) {
             <p className="lead account-intro-copy" style={{ marginTop: 14 }}>
               Manage personal details, review orders, and keep custom cake conversations in one clean dashboard.
             </p>
+            <div className="account-primary-actions">
+              <Link className="button" href="/account/orders">
+                View My Orders
+              </Link>
+              <Link className="button-ghost" href="/track-order">
+                Track an Order
+              </Link>
+            </div>
           </div>
           <div className="account-hero-meta">
             <div className="account-stat">
@@ -191,8 +199,8 @@ async function AccountPageInner({ searchParams }: AccountPageProps) {
                   <h2>Recent Orders</h2>
                   <p>Track your latest purchases and jump back into checkout quickly.</p>
                 </div>
-                <Link className="account-card-action" href="/shop">
-                  Shop now
+                <Link className="account-card-action" href="/account/orders">
+                  View all orders
                 </Link>
               </div>
               {orders.length ? (

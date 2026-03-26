@@ -1146,6 +1146,13 @@ p {
   font-size: 15px;
 }
 
+.account-primary-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
 .account-hero-meta {
   display: flex;
   flex-wrap: wrap;
@@ -1882,6 +1889,10 @@ p {
   .account-hero-meta {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .account-primary-actions {
+    width: 100%;
   }
 
   .account-card-header,

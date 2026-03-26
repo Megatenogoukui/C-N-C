@@ -84,6 +84,11 @@ export function MenuDrawer({
         ))}
         {variant === "store" ? (
           <>
+            {accountHref ? (
+              <Link href="/account/orders" onClick={() => setOpen(false)}>
+                My Orders
+              </Link>
+            ) : null}
             <Link href="/cart" onClick={() => setOpen(false)}>
               Cart{cartCount ? ` (${cartCount})` : ""}
             </Link>
