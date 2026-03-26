@@ -8,30 +8,37 @@ import {
   StorySection
 } from "@/components/sections";
 import { getProducts } from "@/lib/catalog";
-import { buildPageMetadata, getLocalBusinessSchema, stringifyJsonLd } from "@/lib/seo";
+import { buildPageMetadata, getAbsoluteUrl, getLocalBusinessSchema, getSiteOrigin, stringifyJsonLd } from "@/lib/seo";
 
-export const metadata = buildPageMetadata({
-  title: "Cakes in Mulund | Cakes N Chocolates",
-  description:
-    'C "N" C is a Mulund East cakes and chocolates brand for birthday cakes, brownies, cupcakes, and custom celebration cakes with local delivery across Mumbai serviceable pincodes.',
-  path: "/",
-  keywords: [
-    "cakes in Mulund East Mumbai",
-    "cakes and chocolates in Mulund",
-    "birthday cake delivery Mulund",
-    "homemade chocolates Mulund"
-  ]
-});
+export async function generateMetadata() {
+  const origin = await getSiteOrigin();
+
+  return buildPageMetadata({
+    title: "Cakes in Mulund | Cakes N Chocolates",
+    description:
+      'C "N" C is a Mulund East cakes and chocolates brand for birthday cakes, brownies, cupcakes, and custom celebration cakes with local delivery across Mumbai serviceable pincodes.',
+    path: "/",
+    keywords: [
+      "cakes in Mulund East Mumbai",
+      "cakes and chocolates in Mulund",
+      "birthday cake delivery Mulund",
+      "homemade chocolates Mulund"
+    ],
+    origin
+  });
+}
 
 export default async function HomePage() {
   const products = await getProducts();
   const localBusinessSchema = getLocalBusinessSchema();
+  const pageUrl = await getAbsoluteUrl("/");
   const webPageSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: "Cakes and chocolates in Mulund",
-    url: localBusinessSchema.url,
-    description: metadata.description,
+    url: pageUrl,
+    description:
+      'C "N" C is a Mulund East cakes and chocolates brand for birthday cakes, brownies, cupcakes, and custom celebration cakes with local delivery across Mumbai serviceable pincodes.',
     about: [
       "Birthday cakes in Mulund",
       "Custom cakes in Mulund East",

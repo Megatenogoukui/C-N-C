@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProductCard } from "@/components/cards";
 import { getProducts } from "@/lib/catalog";
-import { buildPageMetadata } from "@/lib/seo";
+import { buildPageMetadata, getSiteOrigin } from "@/lib/seo";
 
 type ShopPageProps = {
   searchParams: Promise<{
@@ -12,15 +12,18 @@ type ShopPageProps = {
   }>;
 };
 
-export const metadata: Metadata = {
-  ...buildPageMetadata({
+export async function generateMetadata(): Promise<Metadata> {
+  const origin = await getSiteOrigin();
+
+  return buildPageMetadata({
     title: "Shop Cakes in Mulund",
     description:
       'Browse birthday cakes, chocolate cakes, eggless cakes, brownies, and celebration favourites for Mulund East delivery from C "N" C Cakes "N" Chocolates.',
     path: "/shop",
-    keywords: ["shop cakes in Mulund", "chocolate cake Mulund", "eggless cake Mulund East"]
-  })
-};
+    keywords: ["shop cakes in Mulund", "chocolate cake Mulund", "eggless cake Mulund East"],
+    origin
+  });
+}
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const filters = await searchParams;

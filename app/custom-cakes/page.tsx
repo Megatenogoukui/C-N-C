@@ -3,21 +3,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { submitCustomCake } from "@/app/actions";
 import { getWhatsAppUrl } from "@/lib/business";
-import { buildPageMetadata } from "@/lib/seo";
+import { buildPageMetadata, getSiteOrigin } from "@/lib/seo";
 
 type CustomPageProps = {
   searchParams: Promise<{ submitted?: string; error?: string }>;
 };
 
-export const metadata: Metadata = {
-  ...buildPageMetadata({
+export async function generateMetadata(): Promise<Metadata> {
+  const origin = await getSiteOrigin();
+
+  return buildPageMetadata({
     title: "Custom Cakes in Mulund",
     description:
       "Submit a bespoke cake inquiry for birthdays, weddings, milestones, and theme cakes in Mulund East with event details, budget, servings, and reference ideas.",
     path: "/custom-cakes",
-    keywords: ["custom cakes Mulund", "theme cakes Mulund East", "wedding cakes Mumbai"]
-  })
-};
+    keywords: ["custom cakes Mulund", "theme cakes Mulund East", "wedding cakes Mumbai"],
+    origin
+  });
+}
 
 export default async function CustomCakesPage({ searchParams }: CustomPageProps) {
   const params = await searchParams;

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { businessConfig } from "@/lib/business";
 
 const defaultSiteOrigin = "https://www.cnccakes.com";
@@ -16,7 +17,7 @@ function normalizeOrigin(value?: string | null) {
   }
 }
 
-export function getSiteOrigin() {
+export function getConfiguredSiteOrigin() {
   return (
     normalizeOrigin(process.env.NEXT_PUBLIC_SITE_URL) ||
     normalizeOrigin(process.env.NEXTAUTH_URL) ||
@@ -26,8 +27,25 @@ export function getSiteOrigin() {
   );
 }
 
-export function getAbsoluteUrl(path = "/") {
-  return new URL(path, getSiteOrigin()).toString();
+export async function getSiteOrigin() {
+  try {
+    const headerStore = await headers();
+    const forwardedHost = headerStore.get("x-forwarded-host");
+    const host = forwardedHost || headerStore.get("host");
+    const proto = headerStore.get("x-forwarded-proto") || "https";
+
+    if (host) {
+      return normalizeOrigin(`${proto}://${host}`) || getConfiguredSiteOrigin();
+    }
+  } catch {
+    return getConfiguredSiteOrigin();
+  }
+
+  return getConfiguredSiteOrigin();
+}
+
+export async function getAbsoluteUrl(path = "/") {
+  return new URL(path, await getSiteOrigin()).toString();
 }
 
 export function getSharedKeywords() {
@@ -50,15 +68,17 @@ export function buildPageMetadata({
   description,
   path,
   keywords,
-  image = socialPreviewImage
+  image = socialPreviewImage,
+  origin
 }: {
   title: string;
   description: string;
   path: string;
   keywords?: string[];
   image?: string;
+  origin?: string;
 }): Metadata {
-  const url = getAbsoluteUrl(path);
+  const url = new URL(path, origin || getConfiguredSiteOrigin()).toString();
   const keywordSet = [...getSharedKeywords(), ...(keywords || [])];
 
   return {
@@ -87,14 +107,16 @@ export function buildPageMetadata({
 }
 
 export function getLocalBusinessSchema() {
+  const email = businessConfig.supportEmail.includes(".example") ? undefined : businessConfig.supportEmail;
+
   return {
     "@context": "https://schema.org",
     "@type": ["Bakery", "FoodEstablishment", "LocalBusiness"],
     name: 'C "N" C Cakes "N" Chocolates',
     alternateName: "Cakes N Chocolates",
-    url: getSiteOrigin(),
+    url: getConfiguredSiteOrigin(),
     telephone: `+${businessConfig.supportPhone}`,
-    email: businessConfig.supportEmail,
+    ...(email ? { email } : {}),
     areaServed: [
       {
         "@type": "City",

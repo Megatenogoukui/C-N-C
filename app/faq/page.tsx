@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { buildPageMetadata, getAbsoluteUrl, stringifyJsonLd } from "@/lib/seo";
+import { buildPageMetadata, getAbsoluteUrl, getSiteOrigin, stringifyJsonLd } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  ...buildPageMetadata({
+export async function generateMetadata(): Promise<Metadata> {
+  const origin = await getSiteOrigin();
+
+  return buildPageMetadata({
     title: "Cake Delivery FAQ",
     description:
       "Answers about cake delivery in Mulund, custom cake lead times, freshness, payment options, and support for C N C customers.",
     path: "/faq",
-    keywords: ["cake delivery FAQ Mulund", "custom cake questions Mumbai", "Mulund cake shop support"]
-  })
-};
+    keywords: ["cake delivery FAQ Mulund", "custom cake questions Mumbai", "Mulund cake shop support"],
+    origin
+  });
+}
 
 const faqs = [
   ["How much notice do you need?", "Most catalog cakes work with 24-hour notice. Complex custom pieces need manual review."],

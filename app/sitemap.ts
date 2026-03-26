@@ -6,26 +6,45 @@ import { getAbsoluteUrl } from "@/lib/seo";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const [products, posts] = await Promise.all([getProducts(), getJournalEntries()]);
+  const [
+    homeUrl,
+    shopUrl,
+    customUrl,
+    aboutUrl,
+    faqUrl,
+    blogUrl,
+    trackUrl
+  ] = await Promise.all([
+    getAbsoluteUrl("/"),
+    getAbsoluteUrl("/shop"),
+    getAbsoluteUrl("/custom-cakes"),
+    getAbsoluteUrl("/about"),
+    getAbsoluteUrl("/faq"),
+    getAbsoluteUrl("/blog"),
+    getAbsoluteUrl("/track-order")
+  ]);
 
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: getAbsoluteUrl("/"), lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: getAbsoluteUrl("/shop"), lastModified: now, changeFrequency: "daily", priority: 0.95 },
-    { url: getAbsoluteUrl("/custom-cakes"), lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: getAbsoluteUrl("/about"), lastModified: now, changeFrequency: "monthly", priority: 0.75 },
-    { url: getAbsoluteUrl("/faq"), lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: getAbsoluteUrl("/blog"), lastModified: now, changeFrequency: "weekly", priority: 0.65 },
-    { url: getAbsoluteUrl("/track-order"), lastModified: now, changeFrequency: "weekly", priority: 0.6 }
+    { url: homeUrl, lastModified: now, changeFrequency: "weekly", priority: 1 },
+    { url: shopUrl, lastModified: now, changeFrequency: "daily", priority: 0.95 },
+    { url: customUrl, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: aboutUrl, lastModified: now, changeFrequency: "monthly", priority: 0.75 },
+    { url: faqUrl, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: blogUrl, lastModified: now, changeFrequency: "weekly", priority: 0.65 },
+    { url: trackUrl, lastModified: now, changeFrequency: "weekly", priority: 0.6 }
   ];
 
-  const productRoutes: MetadataRoute.Sitemap = products.map((product) => ({
-    url: getAbsoluteUrl(`/product/${product.slug}`),
+  const productUrls = await Promise.all(products.map((product) => getAbsoluteUrl(`/product/${product.slug}`)));
+  const productRoutes: MetadataRoute.Sitemap = products.map((product, index) => ({
+    url: productUrls[index],
     lastModified: now,
     changeFrequency: "weekly",
     priority: 0.85
   }));
 
-  const postRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: getAbsoluteUrl("/blog"),
+  const postUrls = await Promise.all(posts.map((post) => getAbsoluteUrl(`/blog/${post.slug}`)));
+  const postRoutes: MetadataRoute.Sitemap = posts.map((post, index) => ({
+    url: postUrls[index],
     lastModified: post.updatedAt,
     changeFrequency: "monthly",
     priority: 0.55

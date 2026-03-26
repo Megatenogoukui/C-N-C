@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     return { title: "Product not found" };
   }
 
-  const url = getAbsoluteUrl(`/product/${product.slug}`);
+  const url = await getAbsoluteUrl(`/product/${product.slug}`);
   const description = `${product.seoBlurb} Order from C "N" C Cakes "N" Chocolates for delivery in Mulund East, Mumbai.`;
 
   return {
@@ -77,7 +77,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       priceCurrency: "INR",
       price: product.priceInr,
       availability: "https://schema.org/InStock",
-      url: getAbsoluteUrl(`/product/${product.slug}`),
+      url: await getAbsoluteUrl(`/product/${product.slug}`),
       seller: {
         "@type": "Organization",
         name: 'C "N" C Cakes "N" Chocolates'
@@ -97,19 +97,19 @@ export default async function ProductPage({ params }: ProductPageProps) {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: getAbsoluteUrl("/")
+        item: await getAbsoluteUrl("/")
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Shop",
-        item: getAbsoluteUrl("/shop")
+        item: await getAbsoluteUrl("/shop")
       },
       {
         "@type": "ListItem",
         position: 3,
         name: product.name,
-        item: getAbsoluteUrl(`/product/${product.slug}`)
+        item: await getAbsoluteUrl(`/product/${product.slug}`)
       }
     ]
   };

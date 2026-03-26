@@ -1,16 +1,20 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getJournalEntries } from "@/lib/content";
-import { buildPageMetadata } from "@/lib/seo";
+import { buildPageMetadata, getSiteOrigin } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  ...buildPageMetadata({
+export async function generateMetadata(): Promise<Metadata> {
+  const origin = await getSiteOrigin();
+
+  return buildPageMetadata({
     title: "Cake Journal",
     description:
       "Guides on birthday cakes in Mulund, custom cake planning, gifting ideas, and local bakery tips from C N C Cakes N Chocolates.",
     path: "/blog",
-    keywords: ["cake blog Mulund", "birthday cake guide Mumbai", "custom cake planning"]
-  })
-};
+    keywords: ["cake blog Mulund", "birthday cake guide Mumbai", "custom cake planning"],
+    origin
+  });
+}
 
 export default async function BlogPage() {
   const posts = await getJournalEntries();
@@ -28,6 +32,11 @@ export default async function BlogPage() {
               </p>
               <p style={{ marginTop: 12 }}>
                 {post.body}
+              </p>
+              <p style={{ marginTop: 18 }}>
+                <Link className="button-small" href={`/blog/${post.slug}`}>
+                  Read article
+                </Link>
               </p>
             </article>
           ))}

@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getStoryEntries } from "@/lib/content";
-import { buildPageMetadata } from "@/lib/seo";
+import { buildPageMetadata, getSiteOrigin } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  ...buildPageMetadata({
+export async function generateMetadata(): Promise<Metadata> {
+  const origin = await getSiteOrigin();
+
+  return buildPageMetadata({
     title: "About Our Mulund Bakery",
     description:
       'Learn how C "N" C built a homemade cakes and chocolates brand for Mulund East, Mumbai with premium celebration cakes, brownies, and custom orders.',
     path: "/about",
-    keywords: ["Mulund bakery story", "cakes n chocolates Mulund East", "homemade cake shop Mumbai"]
-  })
-};
+    keywords: ["Mulund bakery story", "cakes n chocolates Mulund East", "homemade cake shop Mumbai"],
+    origin
+  });
+}
 
 export default async function AboutPage() {
   const images = [
