@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { businessConfig } from "@/lib/business";
 
-const defaultSiteOrigin = "https://www.cnccakes.com";
+const defaultSiteOrigin = "https://c-n-c-rho.vercel.app";
 const socialPreviewImage = "https://images.unsplash.com/photo-1535141192574-5d4897c12636?auto=format&fit=crop&w=1800&q=80";
 
 function normalizeOrigin(value?: string | null) {
